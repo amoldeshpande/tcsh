@@ -21,3 +21,9 @@ testsuite.dir/**
 testsuite.log
 *.suo
 *~
+.vs/
+win32/BSDLOGO.res
+terminfo.txt
+tcsh.map
+tcsh-x64.sln
+win32/nt.const.h
