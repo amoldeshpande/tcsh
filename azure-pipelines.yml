@@ -15,8 +15,9 @@ variables:
 
 steps:
 - script: |
-  for /f "usebackq tokens=*" %%l in (`"c:\Program Files (x86)\Microsoft Visual Studio\Installer\vswhere.exe" -property installationPath`) do set bar=%%l
-  call "%bar%"\Common7\Tools\VsDevCmd.bat -arch=$(BuildPlatform)
-  copy config\win32 config.h
-  nmake -f win32\makefile.win32 
+  	for /f "usebackq tokens=*" %%l in (`"c:\Program Files (x86)\Microsoft Visual Studio\Installer\vswhere.exe" -property installationPath`) do set bar=%%l
+  	call "%bar%"\Common7\Tools\VsDevCmd.bat -arch=$(BuildPlatform)
+  	copy config\win32 config.h
+  	nmake -f win32\makefile.win32 
+  displayName: Build
 
