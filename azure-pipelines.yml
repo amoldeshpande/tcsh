@@ -19,5 +19,5 @@ steps:
       call "%bar%"\Common7\Tools\VsDevCmd.bat -arch=$(BuildPlatform)
       copy config\win32 config.h
       nmake -f win32\makefile.win32 
-  displayName: Build
+	displayName: Build
 
