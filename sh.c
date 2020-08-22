@@ -179,7 +179,7 @@ add_localedir_to_nlspath(const char *path)
     if (path == NULL)
         return;
 
-    (void) xsnprintf(trypath, sizeof(trypath), "%s/en/LC_MESSAGES/tcsh.cat",
+    (void) xsnprintf(trypath, sizeof(trypath), "%s/C/LC_MESSAGES/tcsh.cat",
 	path);
     if (stat(trypath, &st) == -1)
 	return;
@@ -2521,14 +2521,19 @@ static void
 record(void)
 {
     static int again = 0;
+    int ophup_disabled;
+
     if (again++)
 	return;
 
+    ophup_disabled = phup_disabled;
+    phup_disabled = 1;
     if (!fast) {
 	recdirs(NULL, adrof(STRsavedirs) != NULL);
 	rechist(NULL, adrof(STRsavehist) != NULL);
     }
     displayHistStats("Exiting");	/* no-op unless DEBUG_HIST */
+    phup_disabled = ophup_disabled;
 }
 
 /*

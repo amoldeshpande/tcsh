@@ -182,8 +182,9 @@ lex(struct wordent *hp)
 	wdp = new;
 	wdp->word = word(parsehtime);
 	parsehtime = 0;
-	if (enterhist && toolong++ > 10 * 1024)
+	if (enterhist && toolong++ > 10 * 1024) {
 	    stderror(ERR_LTOOLONG);
+	}
     } while (wdp->word[0] != '\n');
     cleanup_ignore(hp);
     cleanup_until(hp);
@@ -300,8 +301,9 @@ word(int parsehtime)
 
     cleanup_push(&wbuf, Strbuf_cleanup);
 loop:
-    if (enterhist && toolong++ > 256 * 1024)
-	seterror(ERR_WTOOLONG);
+    if (enterhist && toolong++ > 256 * 1024) {
+	stderror(ERR_WTOOLONG);
+    }
     while ((c = getC(DOALL)) == ' ' || c == '\t')
 	continue;
     if (cmap(c, _META | _ESC))
@@ -360,8 +362,9 @@ loop:
     c1 = 0;
     dolflg = DOALL;
     for (;;) {
-	if (enterhist && toolong++ > 256 * 1024)
-	    seterror(ERR_WTOOLONG);
+	if (enterhist && toolong++ > 256 * 1024) {
+	    stderror(ERR_WTOOLONG);
+	}
 	if (c1) {
 	    if (c == c1) {
 		c1 = 0;

@@ -1517,9 +1517,8 @@ dosetenv(Char **v, struct command *c)
 	/*
 	 * convert to canonical pathname (possibly resolving symlinks)
 	 */
-	canon = dcanon(lp, lp);
 	cleanup_ignore(lp);
-	cleanup_until(lp);
+	canon = dcanon(lp, lp);
 	cleanup_push(canon, xfree);
 	setv(STRhome, quote(canon), VAR_READWRITE); /* lp memory used here */
 	cleanup_ignore(canon);
