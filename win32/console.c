@@ -105,6 +105,19 @@ void redo_console(void) {
 void nt_term_cleanup(void) {
 	CloseHandle(ghstdout);
 }
+void nt_set_win10_vt_mode() {
+    if (IsWindows10OrGreater()) {
+		DWORD dwmode;
+        if (!GetConsoleMode(ghstdout, &dwmode)) {
+            dprintf("getconsole mode failed %d\n",GetLastError());
+			return;
+        }
+        if (!SetConsoleMode(ghstdout, dwmode | ENABLE_VIRTUAL_TERMINAL_PROCESSING)) {
+            return;
+        }
+    }
+}
+
 void nt_term_init() {
 
 	DWORD dwmode;
@@ -116,7 +129,7 @@ void nt_term_init() {
 	if(!SetConsoleMode(hinput,dwmode | ENABLE_WINDOW_INPUT) ){
 		return;
 	}
-
+	nt_set_win10_vt_mode();
 	redo_console();
 
 	return;
