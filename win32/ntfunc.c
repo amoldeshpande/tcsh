@@ -310,6 +310,8 @@ void dostart(Char ** vc, struct command *c) {
 		}
 	}
 	else {
+		// reset vt mode in case child process has messed with the console
+		nt_set_win10_vt_mode();
 		CloseHandle(pi.hProcess);
 		CloseHandle(pi.hThread);
 
@@ -501,6 +503,8 @@ int nt_feed_to_cmd(char *file,char **argv) {
 		restore_path(ptr);
 	}
 	else {
+		// reset vt mode in case child process has messed with the console
+		nt_set_win10_vt_mode();
 
 		restore_path(ptr);
 		CloseHandle(pi.hThread);
@@ -1042,7 +1046,8 @@ re_cp:
 		int gui_app ;
 		DWORD exitcode;
 		char guivar[50];
-
+		// reset vt mode in case child process has messed with the console
+		nt_set_win10_vt_mode();
 
 		if (GetEnvironmentVariable("TCSH_NOASYNCGUI",guivar,50))
 			gui_app=0;

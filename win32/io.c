@@ -160,7 +160,7 @@ int nt_write(int fd, const unsigned char * buf, size_t howmany) {
     ssize_t start = 0;
     int rc,wrote = 0;
 
-    if (!isatty(fd) || (varval(STRcolor) == NULL))
+    if (!isatty(fd) || (varval(STRcolor) == NULL) || IsWindows10OrGreater())
 	return nt_write_(fd, buf, howmany);
 
     for (i = 0; i < howmany; i++) {
