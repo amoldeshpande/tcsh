@@ -154,8 +154,10 @@ OBJS= $(SHOBJS) $(TWOBJS) $(EDOBJS) $(TCOBJS) $(NTOBJS)
 all: $(BUILD)
 
 $(BUILD): $(OBJS)  ntb1.$(SUF) ntb2.$(SUF) win32/$(NTRES).res 
+	win32\create_manifest.cmd > win32\tcsh.manifest
 	link $(LDFLAGS) ntb1.$(SUF) $(OBJS)  $(LIBES) ntb2.$(SUF) $(EXTRALIBS) \
 	win32/$(NTRES).res $(LOADABLE_RES) -map:tcsh.map -out:$(BUILD) 
+	mt.exe -manifest win32\tcsh.manifest -outputresource:tcsh-x64.exe;1
 
 gcompress:$(BUILD)
 	gzip -v9 $(BUILD)
