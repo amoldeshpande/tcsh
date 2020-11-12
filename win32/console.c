@@ -56,6 +56,7 @@ WORD get_attributes();
 
 static WORD wNormalAttributes;
 
+static BOOL nt_is_windows_10_or_greater = FALSE;
 
 static int nt_is_raw;
 //
@@ -105,6 +106,9 @@ void redo_console(void) {
 void nt_term_cleanup(void) {
 	CloseHandle(ghstdout);
 }
+BOOL is_windows_10_or_greater() {
+  return 	nt_is_windows_10_or_greater ;
+}
 void nt_set_win10_vt_mode() {
     if (IsWindows10OrGreater()) {
 		DWORD dwmode;
@@ -116,6 +120,7 @@ void nt_set_win10_vt_mode() {
             return;
         }
     }
+	nt_is_windows_10_or_greater = TRUE;
 }
 
 void nt_term_init() {

@@ -28,6 +28,8 @@ testsuite.log
 *.suo
 *~
 .vs/
+win32/tcsh.manifest
+win32/nt.const.h
 win32/BSDLOGO.res
 terminfo.txt
 tcsh.map
