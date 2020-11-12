@@ -52,9 +52,9 @@
 extern void make_err_str(unsigned int ,char *,int ) ;
 extern void generic_handler(int);
 extern int console_write(HANDLE,unsigned char*,int);
+extern BOOL is_windows_10_or_greater() ;
 
 int consoleread(HANDLE , unsigned char * ,size_t ) ;
-
 INPUT_RECORD girec[2048];
 
 unsigned short __nt_want_vcode=0,__nt_vcode=0;
@@ -160,7 +160,7 @@ int nt_write(int fd, const unsigned char * buf, size_t howmany) {
     ssize_t start = 0;
     int rc,wrote = 0;
 
-    if (!isatty(fd) || (varval(STRcolor) == NULL) || IsWindows10OrGreater())
+    if (!isatty(fd) || (varval(STRcolor) == NULL) || is_windows_10_or_greater())
 	return nt_write_(fd, buf, howmany);
 
     for (i = 0; i < howmany; i++) {
