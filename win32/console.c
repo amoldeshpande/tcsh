@@ -119,8 +119,8 @@ void nt_set_win10_vt_mode() {
         if (!SetConsoleMode(ghstdout, dwmode | ENABLE_VIRTUAL_TERMINAL_PROCESSING)) {
             return;
         }
+	  nt_is_windows_10_or_greater = TRUE;
     }
-	nt_is_windows_10_or_greater = TRUE;
 }
 
 void nt_term_init() {
