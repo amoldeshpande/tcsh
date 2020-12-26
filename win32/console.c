@@ -134,8 +134,8 @@ void nt_term_init() {
 	if(!SetConsoleMode(hinput,dwmode | ENABLE_WINDOW_INPUT) ){
 		return;
 	}
-	nt_set_win10_vt_mode();
 	redo_console();
+	nt_set_win10_vt_mode();
 
 	return;
 }
