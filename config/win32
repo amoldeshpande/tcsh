@@ -99,6 +99,9 @@
 #define HAVE_STRERROR            1
 
 #define SHORT_STRINGS    
+#ifdef WINNT_NATIVE_UTF8_SUPPORT
+#define NLS
+#endif
 
 #define SIZEOF_WCHAR_T           2
 
