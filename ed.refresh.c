@@ -1207,7 +1207,7 @@ RefCursor(void)
     flush();
 }
 
-#ifndef WINTT_NATIVE
+#ifndef WINNT_NATIVE
 static void
 PutPlusOne(Char c, int width)
 {
