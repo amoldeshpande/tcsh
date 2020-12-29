@@ -84,6 +84,7 @@ void nt_init(void) {
 	}
 #endif SECURE_CD
 	_set_invalid_parameter_handler(do_nothing);
+	setlocale(LC_ALL,".UTF8");
 	init_stdio();
 	nt_init_signals();
 	nt_term_init();
