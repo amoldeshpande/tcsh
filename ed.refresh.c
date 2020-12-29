@@ -161,6 +161,7 @@ Draw(Char *cp, int nocomb, int drawPrompt)
 {
     int w, i, lv, lh;
     Char c, attr;
+    int consumed = 0;
 
 #ifdef WIDE_STRINGS
     if (!drawPrompt) {			/* draw command-line */
@@ -192,7 +193,7 @@ Draw(Char *cp, int nocomb, int drawPrompt)
     attr = *cp & ~CHAR;
     c = *cp & CHAR;
 #endif
-    w = NLSClassify(c, nocomb, drawPrompt);
+    w = NLSClassifyMB(cp, nocomb, drawPrompt,&consumed);
     switch (w) {
 	case NLSCLASS_NL:
 	    Vdraw('\0', 0);		/* assure end of line	 */
@@ -257,10 +258,12 @@ Draw(Char *cp, int nocomb, int drawPrompt)
 	    Vdisplay[lv][lh] = MakeLiteral(cp, 1, Vdisplay[lv][lh]);
 	    break;
 	default:
-	    Vdraw(*cp, w);
+	    for(int i =0 ; i < consumed;i++){
+		Vdraw(*(cp+i), 1);
+	    }
 	    break;
     }
-    return 1;
+    return consumed;
 }
 
 static void
@@ -315,7 +318,11 @@ RefreshPromptpart(Char *buf)
 	    while (*cp & LITERAL)
 		cp++;
 	    if (*cp) {
-		w = NLSWidth(*cp & CHAR);
+		int consumed = 0;
+		w = NLSWidthMB(cp,&consumed);
+		if (w > 0) {
+		    cp += (consumed -1);
+		}
 		Vdraw(MakeLiteral(litstart, cp + 1 - litstart, 0), w);
 		cp++;
 	    }
@@ -1174,6 +1181,7 @@ RefCursor(void)
 {				/* only move to new cursor pos */
     Char *cp;
     int w, h, th, v;
+    int consumed = 0;
 
     /* first we must find where the cursor is... */
     h = 0;
@@ -1185,15 +1193,16 @@ RefCursor(void)
 	    cp++;
 	    continue;
 	}
-	w = NLSClassify(*cp & CHAR, cp == Prompt, 0);
-	cp++;
+	w = NLSClassifyMB(cp, cp == Prompt, 0,&consumed);
+	cp += consumed;
 	CalcPosition(w, th, &h, &v);
     }
 
     for (cp = InputBuf; cp < Cursor;) {	/* do input buffer to Cursor */
-	w = NLSClassify(*cp & CHAR, cp == InputBuf, 0);
-	cp++;
-	CalcPosition(w, th, &h, &v);
+	consumed =0;
+	w = NLSClassifyMB(cp, cp == InputBuf, 0,&consumed);
+	cp += consumed;
+	CalcPosition(w, th, &h, &v);	
     }
 
     /* now go there */
@@ -1247,6 +1256,7 @@ RefPlusOne(int l)
 				 * assumes that screen cursor == real cursor */
     Char *cp, c;
     int w;
+    int consumed = 0;
 
     if (Cursor != LastChar) {
 	Refresh();		/* too hard to handle */
@@ -1258,7 +1268,7 @@ RefPlusOne(int l)
     }
     cp = Cursor - l;
     c = *cp & CHAR;
-    w = NLSClassify(c, cp == InputBuf, 0);
+    w = NLSClassifyMB(cp, cp == InputBuf, 0,&consumed);
     switch(w) {
 	case NLSCLASS_CTRL:
 	    PutPlusOne('^', 1);
@@ -1284,8 +1294,11 @@ RefPlusOne(int l)
 		StartHighlight();
 	    if (l > 1)
 		PutPlusOne(MakeLiteral(cp, l, 0), 1);
-	    else
-		PutPlusOne(*cp, 1);
+	    else {
+		for (int i = 0; i < consumed; i++) {
+		    PutPlusOne(*(cp+i), 1);
+		}
+	    }
 	    if (adrof(STRhighlight) && MarkIsSet)
 		StopHighlight();
 	    break;

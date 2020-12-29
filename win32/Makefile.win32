@@ -24,7 +24,7 @@ INCLUDES=-I. -I.. -Iwin32
 DEBUG_CRTLIBS= libcmtd.lib oldnames.lib  libcpmtd.lib libvcruntimed.lib libucrtd.lib legacy_stdio_definitions.lib legacy_stdio_wide_specifiers.lib
 CRTLIBS= libcmt.lib oldnames.lib libcpmt.lib libvcruntime.lib libucrt.lib legacy_stdio_definitions.lib legacy_stdio_wide_specifiers.lib
 
-EXTRAFLAGS = -DWINNT_NATIVE -DNO_CRYPT -DHAVE_DIRENT_H $(EFL) \
+EXTRAFLAGS = -DWINNT_NATIVE -DWINNT_NATIVE_UTF8_SUPPORT -DNO_CRYPT -DHAVE_DIRENT_H $(EFL) \
               -wd28159 -wd28218 -wd28199 -wd6387 -wd6385 -wd6553
 
 WINDOWS_WARNING_LEVEL=-W4 -WX
