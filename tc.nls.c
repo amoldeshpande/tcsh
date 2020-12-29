@@ -72,6 +72,11 @@ NLSWidth(Char c)
     return iswprint(c) != 0;
 # endif
 }
+int NLSWidthMB(Char* cp, int*consumed)
+{
+    *consumed = 1;
+    return NLSWidth(*cp & CHAR);
+}
 
 int
 NLSStringWidth(const Char *s)
@@ -157,3 +162,10 @@ NLSClassify(Char c, int nocomb, int drawPrompt)
 	return w;
     return NLSCLASS_ILLEGAL;
 }
+#ifndef WINNT_NATIVE
+int NLSClassifyMB(Char* c, int nocomb, int drawPrompt,int* consumed)
+{
+    *consumed = 1;
+    return NLSClassify(*c,nocomb,drawPrompt);
+}
+#endif //!WINNT_NATIVE
