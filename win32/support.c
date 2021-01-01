@@ -558,8 +558,10 @@ void silly_entry(void *peb) {
 	char ptr3[MAX_PATH];
 	OSVERSIONINFO osver;
 
+#ifdef WINNT_NATIVE_UTF8_SUPPORT
 	SetConsoleCP(CP_UTF8);
 	SetConsoleOutputCP(CP_UTF8);
+#endif
 	osver.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
 
 #pragma warning(suppress:4996 28159) //deprecated function
@@ -647,8 +649,9 @@ void silly_entry(void *peb) {
 #endif _M_IX86
 
 
-//	SetFileApisToOEM();
+#ifdef WINNT_NATIVE_UTF8_SUPPORT
 	SetFileApisToANSI();
+#endif// WINNT_NATIVE_UTF8_SUPPORT
 
 	if (!bIsWow64Process)
 		heap_init();
