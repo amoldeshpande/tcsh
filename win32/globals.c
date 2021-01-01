@@ -63,7 +63,7 @@ dprintf(char *format, ...)
 	{
 		va_start(vl, format);
 #pragma warning(disable:4995)
-		wvsprintf(putbuf,format, vl);
+		vsnprintf(putbuf,ARRAYSIZE(putbuf),format, vl);
 #pragma warning(default:4995)
 		va_end(vl);
 		OutputDebugString(putbuf);

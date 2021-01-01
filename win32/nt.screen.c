@@ -58,7 +58,7 @@ extern void NT_WrapHorizontal(void);
 static int GetSize(int *lins, int *cols);
 
 int DisplayWindowHSize;
-	void
+void
 terminit(void)
 {
 	return;
@@ -69,6 +69,8 @@ terminit(void)
 int T_ActualWindowSize;
 
 static	void	ReBufferDisplay	(void);
+static uint32_t* utf8_chars = NULL;
+static Char currentIndex = 0;
 
 
 /*ARGSUSED*/
@@ -117,6 +119,10 @@ ReBufferDisplay(void)
 		b[i] = (Char *) xmalloc((size_t) (sizeof(*b[i]) * (TermH + 1)));
 	b[TermV] = NULL;
 	Vdisplay = b;
+
+	if(utf8_chars != NULL) {
+		memset(utf8_chars,0,NT_UTF8_MB);
+	}
 }
 
 	void
@@ -304,7 +310,6 @@ MoveToChar(int where)
 	}
 
 	if (!where) {		/* if where is first column */
-		//(void) putraw('\r');	/* do a CR */
 		NT_MoveToLineOrChar(where, 0);
 		flush();
 		CursorH = 0;
@@ -315,7 +320,71 @@ MoveToChar(int where)
 	CursorH = where;		/* now where is here */
 }
 
-	void
+
+Char nt_make_utf8_multibyte(Char* cp, int len) {
+
+	Char retIdex = 0;
+	uint32_t mbchar = 0;
+
+	if(len == 1){
+		return *cp;
+	}
+	if(utf8_chars == NULL){
+		utf8_chars = xmalloc(sizeof(uint32_t)*NT_UTF8_MB);
+	}
+	for(Char i = 0; i < len;i++) {
+		mbchar <<= 8;
+		mbchar |= *cp;
+		cp++;
+	}
+	for(Char i=0; i < NT_UTF8_MB;i++) {
+		if(utf8_chars[i] == mbchar) {
+			return i | NT_UTF8_MB;
+		}
+		if(utf8_chars[i] ==0) {
+			break;
+		}
+	}
+	retIdex = currentIndex++;
+
+	if(currentIndex == LITERAL){
+		currentIndex++;
+	}
+	//TODO deal with wraparound better
+	if(currentIndex == NT_UTF8_MB){
+		currentIndex = 0;
+	}
+
+	utf8_chars[retIdex] = mbchar;
+	return (retIdex | NT_UTF8_MB);
+}
+void putraw_utf8(Char c) {
+	if (c & NT_UTF8_MB) {
+		Char index = c & ~NT_UTF8_MB;
+		if (index >= 0 && index < NT_UTF8_MB) {
+			uint32_t mbchar = utf8_chars[index];
+			int start = 0;
+			//
+			// there have to be at least 2 bytes in the utf8 sequence
+			// (otherwise we would not have marked it with NT_UTF8_MB.)
+			// 
+			if ((mbchar & 0xFF000000) == 0) {
+				start++;
+			}
+			if((mbchar & 0xFFFF0000) == 0) {
+				start = 2;
+			}
+			for(int i =start; i < 4;i++) {
+				unsigned char by = (mbchar >> (3-i)*8) & 0xFF;
+				putraw(by);
+			}
+		}
+	}
+	else {
+		putraw(c);
+	}
+}
+void
 so_write(register Char *cp, register int n)
 {
 	if (n <= 0)
@@ -331,10 +400,10 @@ so_write(register Char *cp, register int n)
 
 			for (d = litptr + (*cp++ & ~LITERAL) * LIT_FACTOR; *d;
 					d++)
-				(void) putraw(*d);
+				(void) putraw_utf8(*d);
 		}
 		else
-			(void) putraw(*cp++);
+			(void) putraw_utf8(*cp++);
 		CursorH++;
 	} while (--n);
 
