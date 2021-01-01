@@ -767,6 +767,13 @@ extern struct sigaction parterm;	/* Parents terminate catch */
 #endif
 #define		CHAR_DBWIDTH	(LITERAL|(LITERAL-1))
 
+// We never used ATTRIBUTES in Windows native anyway, so reuse UNDER to mark multibyte entry
+#ifdef WINNT_NATIVE_UTF8_SUPPORT
+#define NT_UTF8_MB 0040000
+#undef UNDER
+#define UNDER 0
+#endif
+
 # define 	MAX_UTF32	0x7FFFFFFF	/* max UTF32 is U+7FFFFFFF */
 
 EXTERN int     AsciiOnly;	/* If set only 7 bits expected in characters */
