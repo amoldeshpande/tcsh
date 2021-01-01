@@ -382,6 +382,13 @@ ls-F is noticeably slow if color is set. This is especially true on slower
 machines (P100, for example). You may not want to set it for those kinds
 of systems. More so if you already have an external color-ls.
 
+# Windows 10 Virtual Terminal Processing 
+For versions of Windows 10 that support ANSI sequences in the console, simple ANSI sequences should work out of the box. 
+
+# (Experimental) Emoji and other Unicode glyph support
+If compiled with WINNT_NATIVE_UTF8_SUPPORT (default in this branch), unicode emojis etc. as used with "Oh My Posh" are supported. Since this feature has not been tested on non-US-English locales, it is not currently in the master branch of source. If your shell version contains "nt-rev-9.00" and "utf8", this support is present. 
+
+
 watch:
 -----
 Deprecated since Windows does not ship NETBIOS any more

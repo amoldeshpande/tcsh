@@ -165,6 +165,12 @@ extern Char *litptr;	 /* Entries start at offsets divisible by LIT_FACTOR */
 #define LIT_FACTOR 4
 extern int didsetty;
 
+#ifdef WINNT_NATIVE_UTF8_SUPPORT
+#define MAKE_UTF8_MULTIBYTE(ptr,len) nt_make_utf8_multibyte(ptr,len)
+#else
+#define MAKE_UTF8_MULTIBYTE(ptr,len) *(ptr)
+#endif
+
 EXTERN Char *KeyMacro[MAXMACROLEVELS];
 
 /* CHAR_DBWIDTH in Display and Vdisplay means the non-first column of a character

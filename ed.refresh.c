@@ -258,9 +258,7 @@ Draw(Char *cp, int nocomb, int drawPrompt)
 	    Vdisplay[lv][lh] = MakeLiteral(cp, 1, Vdisplay[lv][lh]);
 	    break;
 	default:
-	    for(int i =0 ; i < consumed;i++){
-		Vdraw(*(cp+i), 1);
-	    }
+	    Vdraw(MAKE_UTF8_MULTIBYTE(cp,consumed),w);
 	    break;
     }
     return consumed;
@@ -319,12 +317,14 @@ RefreshPromptpart(Char *buf)
 		cp++;
 	    if (*cp) {
 		int consumed = 0;
+		Char cpSave = *cp;
 		w = NLSWidthMB(cp,&consumed);
-		if (w > 0) {
-		    cp += (consumed -1);
+		if (consumed > 1) {
+		    *cp = MAKE_UTF8_MULTIBYTE(cp,consumed);
 		}
 		Vdraw(MakeLiteral(litstart, cp + 1 - litstart, 0), w);
-		cp++;
+		*cp = cpSave;
+		cp += consumed;
 	    }
 	    else {
 		/*
@@ -1295,9 +1295,7 @@ RefPlusOne(int l)
 	    if (l > 1)
 		PutPlusOne(MakeLiteral(cp, l, 0), 1);
 	    else {
-		for (int i = 0; i < consumed; i++) {
-		    PutPlusOne(*(cp+i), 1);
-		}
+		PutPlusOne(MAKE_UTF8_MULTIBYTE(cp,consumed), 1);
 	    }
 	    if (adrof(STRhighlight) && MarkIsSet)
 		StopHighlight();
