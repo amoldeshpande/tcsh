@@ -166,10 +166,7 @@ int NLSWidthMB(Char* cp, int*consumed)
 int
 NLSStringWidth(const Char *s)
 {
-	WCHAR out;
-	int result = MultiByteToWideChar(CP_UTF8, MB_ERR_INVALID_CHARS,(char*)s,-1,&out, 0);
-
-	return result;
+	return (int)Strlen(s);
 }
 int NLSClassifyMB(Char* cp, int nocomb, int drawPrompt,int* consumed)
 {
