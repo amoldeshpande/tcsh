@@ -386,6 +386,7 @@ extern char *nt_cgets(int,int,char*);
 extern void nls_dll_init(void);
 extern void nls_dll_unload(void);
 extern void nt_autoset_dspmbyte(void);
+extern short nt_make_utf8_multibyte(short*, int len);
 
 /* fork.c */
 extern int fork_init(void);
