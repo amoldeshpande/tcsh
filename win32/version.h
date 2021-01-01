@@ -12,7 +12,7 @@
 #endif // WINNT_NATIVE_UTF8_SUPPORT
 
 #ifdef NTDBG
-#define LOCAL_DEBUG_STR ",-debug"
+#define LOCAL_DEBUG_STR "-debug"
 #else
 #define LOCAL_DEBUG_STR 
 #endif //NTDBG
