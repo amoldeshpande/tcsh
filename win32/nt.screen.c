@@ -120,9 +120,11 @@ ReBufferDisplay(void)
 	b[TermV] = NULL;
 	Vdisplay = b;
 
+#ifdef WINNT_NATIVE_UTF8_SUPPORT
 	if(utf8_chars != NULL) {
 		memset(utf8_chars,0,NT_UTF8_MB);
 	}
+#endif// WINNT_NATIVE_UTF8_SUPPORT
 }
 
 	void
@@ -319,8 +321,7 @@ MoveToChar(int where)
 	NT_MoveToLineOrChar(where, 0);
 	CursorH = where;		/* now where is here */
 }
-
-
+#ifdef WINNT_NATIVE_UTF8_SUPPORT
 Char nt_make_utf8_multibyte(Char* cp, int len) {
 
 	Char retIdex = 0;
@@ -358,7 +359,9 @@ Char nt_make_utf8_multibyte(Char* cp, int len) {
 	utf8_chars[retIdex] = mbchar;
 	return (retIdex | NT_UTF8_MB);
 }
+#endif // WINNT_NATIVE_UTF8_SUPPORT
 void putraw_utf8(Char c) {
+#if defined(WINNT_NATIVE_UTF8_SUPPORT)
 	if (c & NT_UTF8_MB) {
 		Char index = c & ~NT_UTF8_MB;
 		if (index >= 0 && index < NT_UTF8_MB) {
@@ -383,6 +386,9 @@ void putraw_utf8(Char c) {
 	else {
 		putraw(c);
 	}
+#else
+	putraw(c);
+#endif
 }
 void
 so_write(register Char *cp, register int n)
