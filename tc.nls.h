@@ -44,7 +44,6 @@ extern int NLSStringWidth (const Char *);
 #endif
 
 extern Char *NLSChangeCase (const Char *, int);
-extern int NLSClassify (Char, int, int);
 extern int NLSClassifyMB(Char*, int, int,int*);
 
 #define NLSCLASS_CTRL		(-1)
