@@ -15,7 +15,7 @@ steps:
       for /f "usebackq tokens=*" %%l in (`"c:\Program Files (x86)\Microsoft Visual Studio\Installer\vswhere.exe" -property installationPath`) do set bar=%%l
       call "%bar%"\Common7\Tools\VsDevCmd.bat -arch=$(BuildPlatform)
       copy config\win32 config.h
-      nmake -f win32\makefile.win32 
+      nmake -f win32\makefile.win32  FASTBUILD=1
     displayName: Build
 
 #  - task: PublishPipelineArtifact@1
@@ -32,7 +32,7 @@ steps:
       tagSource: 'manual' # Required when action == Create# Options: auto, manual
       #tagPattern: # Optional
       tag: $(Build.BuildNumber) # Required when action == Edit || Action == Delete || TagSource == Manual
-      title: Release from $(Build.SourceBranchName) # Optional
+      title: $(Build.BuildNumber) Release from $(Build.SourceBranchName) # Optional
       #releaseNotesSource: 'file' # Optional. Options: file, input
       #releaseNotesFile: # Optional
       #releaseNotes: # Optional
