@@ -85,7 +85,12 @@ LIBES= user32.lib advapi32.lib kernel32.lib  $(CRTLIBS) strsafe.lib
 NTCFLAGS = $(NTCFLAGS) -Zp8
 !endif
 
-CFLAGS= -MT $(NTCFLAGS) $(INCLUDES) 
+!if "$(FASTBUILD)" != ""
+FASTFLAGS= -MP
+FASTTARGET=fastbuild
+!endif
+
+CFLAGS= -MT $(FASTFLAGS) $(NTCFLAGS) $(INCLUDES) 
 LDFLAGS= -nodefaultlib $(NTLDFLAGS) -stack:1048576,524288 -dynamicbase:no -ignore:4099
 
 
@@ -97,12 +102,14 @@ RM=	-del
 # Resources. which icon you want to use.
 NTRES = BSDLOGO
 
-ASSRCS=	sh.c sh.dir.c sh.dol.c sh.err.c sh.exec.c sh.char.c \
-	sh.exp.c sh.file.c sh.func.c sh.glob.c sh.hist.c sh.init.c \
+ASSRCS1=	sh.c sh.dir.c sh.err.c sh.exec.c sh.char.c \
+	sh.exp.c sh.file.c sh.hist.c sh.init.c \
 	sh.lex.c sh.misc.c sh.parse.c sh.print.c sh.proc.c sh.sem.c \
-	sh.set.c sh.time.c sh.char.h sh.dir.h sh.proc.h sh.h 
-PSSRCS= sh.decls.h glob.c glob.h mi.termios.c mi.wait.h mi.varargs.h ma.setp.c \
-	vms.termcap.c
+	sh.set.c sh.time.c 
+ASSRCS= $(ASSRCS1) sh.dol.c sh.glob.c sh.func.c 
+
+PSSRCS= glob.c mi.termios.c ma.setp.c vms.termcap.c
+
 SHSRCS= $(ASSRCS) $(PSSRCS)
 SHOBJS=	sh.$(SUF) sh.dir.$(SUF) sh.dol.$(SUF) sh.err.$(SUF) sh.exec.$(SUF) \
 	sh.char.$(SUF) sh.exp.$(SUF) sh.func.$(SUF) sh.glob.$(SUF) \
@@ -111,20 +118,26 @@ SHOBJS=	sh.$(SUF) sh.dir.$(SUF) sh.dol.$(SUF) sh.err.$(SUF) sh.exec.$(SUF) \
 	sh.set.$(SUF) sh.time.$(SUF) glob.$(SUF) mi.termios.$(SUF) \
 	ma.setp.$(SUF)  
 
-TWSRCS= tw.decls.h tw.h tw.help.c tw.init.c tw.parse.c tw.spell.c \
-	tw.comp.c tw.color.c
+TWSRCS1= tw.help.c tw.init.c tw.spell.c \
+	
+TWSRCS= $(TWSRCS1) tw.parse.c tw.comp.c tw.color.c
+
 TWOBJS=	tw.help.$(SUF) tw.init.$(SUF) tw.parse.$(SUF) tw.spell.$(SUF) \
 	tw.comp.$(SUF) tw.color.$(SUF)
 
-EDSRCS= ed.chared.c ed.decls.h ed.defns.c ed.h ed.init.c ed.inputl.c \
-	ed.refresh.c ed.xmap.c ed.term.c ed.term.h
+EDSRCS1= ed.defns.c ed.init.c  ed.xmap.c ed.term.c 
+EDSRCS = $(EDSRCS1) ed.chared.c ed.inputl.c ed.refresh.c 
+
 EDOBJS=	ed.chared.$(SUF) ed.refresh.$(SUF) ed.init.$(SUF) \
 	ed.inputl.$(SUF) ed.defns.$(SUF) ed.xmap.$(SUF) ed.term.$(SUF)
 
-TCSRCS= tc.alloc.c tc.bind.c tc.const.c tc.decls.h tc.disc.c \
-	tc.func.c tc.os.c tc.os.h tc.printf.c tc.prompt.c tc.nsl.c \
-	tc.sched.c tc.sig.c tc.sig.h tc.str.c sh.types.h tc.vers.c tc.wait.h \
-	tc.who.c tc.h
+TCSRCS1= tc.const.c tc.disc.c \
+	tc.func.c tc.os.c tc.nls.c \
+	tc.sched.c tc.sig.c tc.str.c tc.vers.c \
+	tc.who.c 
+
+TCSRCS = $(TCSRCS1) tc.alloc.c tc.bind.c tc.printf.c tc.prompt.c 
+
 TCOBJS=	tc.alloc.$(SUF) tc.bind.$(SUF) tc.const.$(SUF)  \
 	tc.disc.$(SUF) tc.func.$(SUF) tc.os.$(SUF) tc.printf.$(SUF) tc.nls.$(SUF) \
 	tc.prompt.$(SUF) tc.sched.$(SUF) tc.sig.$(SUF) tc.str.$(SUF) \
@@ -153,7 +166,7 @@ OBJS= $(SHOBJS) $(TWOBJS) $(EDOBJS) $(TCOBJS) $(NTOBJS)
 
 all: $(BUILD)
 
-$(BUILD): $(OBJS)  ntb1.$(SUF) ntb2.$(SUF) win32/$(NTRES).res 
+$(BUILD): $(FASTTARGET) $(OBJS)  ntb1.$(SUF) ntb2.$(SUF) win32/$(NTRES).res 
 	win32\create_manifest.cmd > win32\tcsh.manifest
 	link $(LDFLAGS) ntb1.$(SUF) $(OBJS)  $(LIBES) ntb2.$(SUF) $(EXTRALIBS) \
 	win32/$(NTRES).res $(LOADABLE_RES) -map:tcsh.map -out:$(BUILD) 
@@ -314,3 +327,11 @@ nt.screen.$(SUF):win32\nt.screen.c ed.defns.h
 
 win32/$(NTRES).res: win32/$(NTRES).rc win32/tcshrc.rc
 	rc -v $(RCFLAGS_WX) -r win32/$(NTRES).rc
+
+fastbuild: ed.defns.h sh.err.h tc.const.h win32\nt.const.h
+	$(CC) $(CF) $(CFLAGS) $(DFLAGS) $(EXTRAFLAGS)  $(IGNORE_64) ed.chared.c\
+	ed.inputl.c sh.dol.c sh.func.c sh.glob.c tw.parse.c tw.comp.c tw.color.c\
+	 ed.refresh.c tc.alloc.c tc.bind.c tc.printf.c tc.prompt.c
+	$(CC) $(CF) $(CFLAGS_WX) $(DFLAGS) $(EXTRAFLAGS) $(NTSRCS)
+	$(CC) $(CF) $(CFLAGS) $(REST_WARNING_LEVEL) $(DFLAGS) $(EXTRAFLAGS) $(ASSRCS1)  \
+	$(TWSRCS1) $(SHSRCS1)  $(TCSRCS1) $(PSSRCS) $(EDSRCS1)
