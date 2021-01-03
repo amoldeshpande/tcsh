@@ -40,7 +40,7 @@ extern int NLSStringWidth (const Char *);
 #else
 # define NLSStringWidth(s) Strlen(s)
 # define NLSWidth(c) 1
-# define NLSWidthMB(c,d) 1
+# define NLSWidthMB(c,d) *d=1,1
 #endif
 
 extern Char *NLSChangeCase (const Char *, int);
