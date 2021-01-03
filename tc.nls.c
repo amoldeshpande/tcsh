@@ -121,9 +121,10 @@ NLSChangeCase(const Char *p, int mode)
 }
 
 int
-NLSClassify(Char c, int nocomb, int drawPrompt)
+NLSClassifyMB(Char* cp, int nocomb, int drawPrompt,int* consumed)
 {
     int w;
+    Char c = *cp & CHAR;
 #ifndef SHORT_STRINGS
     if ((c & 0x80) != 0)		/* c >= 0x80 */
 	return NLSCLASS_ILLEGAL;
@@ -151,7 +152,7 @@ NLSClassify(Char c, int nocomb, int drawPrompt)
 	    return NLSCLASS_TAB;
 	return NLSCLASS_CTRL;
     }
-    w = NLSWidth(c);
+    w = NLSWidthMB(cp,consumed);
     if (drawPrompt) {			/* draw prompt */
 	if (w > 0)
 	    return w;
@@ -162,10 +163,4 @@ NLSClassify(Char c, int nocomb, int drawPrompt)
 	return w;
     return NLSCLASS_ILLEGAL;
 }
-#ifndef WINNT_NATIVE
-int NLSClassifyMB(Char* c, int nocomb, int drawPrompt,int* consumed)
-{
-    *consumed = 1;
-    return NLSClassify(*c,nocomb,drawPrompt);
-}
-#endif //!WINNT_NATIVE
+
