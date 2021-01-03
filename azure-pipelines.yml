@@ -32,7 +32,7 @@ steps:
       tagSource: 'manual' # Required when action == Create# Options: auto, manual
       #tagPattern: # Optional
       tag: $(Build.BuildNumber) # Required when action == Edit || Action == Delete || TagSource == Manual
-      #title: Release from $() # Optional
+      title: Release from $(Build.SourceBranchName) # Optional
       #releaseNotesSource: 'file' # Optional. Options: file, input
       #releaseNotesFile: # Optional
       #releaseNotes: # Optional
