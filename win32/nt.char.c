@@ -130,6 +130,7 @@ void nls_dll_init(void) {
 		free(ptr);
 	}
 }
+#ifdef WINNT_NATIVE_UTF8_SUPPORT
 int NLSWidth(Char c)
 {
 	WCHAR out;
@@ -168,4 +169,5 @@ NLSStringWidth(const Char *s)
 {
 	return (int)Strlen(s);
 }
+#endif// WINNT_NATIVE_UTF8_SUPPORT
 
