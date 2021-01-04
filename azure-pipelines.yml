@@ -1,7 +1,7 @@
 # vim: se expandtab ts=4 sw=2 ai
 
-trigger:
-- master
+trigger: none
+#- master
 
 pool:
   vmImage: 'windows-latest'
