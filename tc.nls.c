@@ -125,6 +125,7 @@ NLSClassifyMB(Char* cp, int nocomb, int drawPrompt,int* consumed)
 {
     int w;
     Char c = *cp & CHAR;
+    *consumed = 1;
 #ifndef SHORT_STRINGS
     if ((c & 0x80) != 0)		/* c >= 0x80 */
 	return NLSCLASS_ILLEGAL;
