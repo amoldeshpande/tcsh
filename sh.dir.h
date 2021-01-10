@@ -40,7 +40,7 @@ struct directory {
     unsigned short *di_count;	/* refcount of processes */
     Char   *di_name;		/* actual name */
 };
-EXTERN struct directory *dcwd IZERO_STRUCT;	/* the one we are in now */
+EXTERN struct directory *dcwd IZERO;	/* the one we are in now */
 EXTERN int symlinks;
 
 #define SYM_CHASE	1
