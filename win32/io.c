@@ -427,7 +427,7 @@ skippy:
 									   )
 										ch = 0;
 									if (alt_pressed) {
-#ifdef DSPMBYTE
+#if defined(DSPMBYTE) || (WINNT_NATIVE_UTF8_SUPPORT)
 										buf[where++] = '\033';
 										if (howmany == 1)
 											pre_ch = ch;
