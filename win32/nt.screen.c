@@ -69,8 +69,8 @@ terminit(void)
 int T_ActualWindowSize;
 
 static	void	ReBufferDisplay	(void);
-static uint32_t* utf8_chars = NULL;
-static Char currentIndex = 0;
+Char get_or_cache_utf8_mb(uint32_t inChar);
+uint32_t get_cached_utf8_mb(Char);
 
 
 /*ARGSUSED*/
@@ -120,11 +120,6 @@ ReBufferDisplay(void)
 	b[TermV] = NULL;
 	Vdisplay = b;
 
-#ifdef WINNT_NATIVE_UTF8_SUPPORT
-	if(utf8_chars != NULL) {
-		memset(utf8_chars,0,NT_UTF8_MB);
-	}
-#endif// WINNT_NATIVE_UTF8_SUPPORT
 }
 
 	void
@@ -324,40 +319,18 @@ MoveToChar(int where)
 #ifdef WINNT_NATIVE_UTF8_SUPPORT
 Char nt_make_utf8_multibyte(Char* cp, int len) {
 
-	Char retIdex = 0;
 	uint32_t mbchar = 0;
 
 	if(len == 1){
 		return *cp;
-	}
-	if(utf8_chars == NULL){
-		utf8_chars = xmalloc(sizeof(uint32_t)*NT_UTF8_MB);
 	}
 	for(Char i = 0; i < len;i++) {
 		mbchar <<= 8;
 		mbchar |= *cp;
 		cp++;
 	}
-	for(Char i=0; i < NT_UTF8_MB;i++) {
-		if(utf8_chars[i] == mbchar) {
-			return i | NT_UTF8_MB;
-		}
-		if(utf8_chars[i] ==0) {
-			break;
-		}
-	}
-	retIdex = currentIndex++;
-
-	if(currentIndex == LITERAL){
-		currentIndex++;
-	}
-	//TODO deal with wraparound better
-	if(currentIndex == NT_UTF8_MB){
-		currentIndex = 0;
-	}
-
-	utf8_chars[retIdex] = mbchar;
-	return (retIdex | NT_UTF8_MB);
+	Char i = get_or_cache_utf8_mb(mbchar);
+	return i | NT_UTF8_MB;
 }
 #endif // WINNT_NATIVE_UTF8_SUPPORT
 void putraw_utf8(Char c) {
@@ -365,7 +338,7 @@ void putraw_utf8(Char c) {
 	if (c & NT_UTF8_MB) {
 		Char index = c & ~NT_UTF8_MB;
 		if (index >= 0 && index < NT_UTF8_MB) {
-			uint32_t mbchar = utf8_chars[index];
+			uint32_t mbchar = get_cached_utf8_mb(index);
 			int start = 0;
 			//
 			// there have to be at least 2 bytes in the utf8 sequence
