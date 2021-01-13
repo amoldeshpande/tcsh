@@ -31,4 +31,7 @@ extern "C" uint32_t get_cached_utf8_mb(Char index) {
 	}
 	return iter->second;
 }
-
+extern "C" void clear_utf8_maps() {
+	utf8_chars.clear();
+	reverse_map.clear();
+}
