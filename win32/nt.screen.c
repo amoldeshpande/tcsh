@@ -69,8 +69,9 @@ terminit(void)
 int T_ActualWindowSize;
 
 static	void	ReBufferDisplay	(void);
-Char get_or_cache_utf8_mb(uint32_t inChar);
-uint32_t get_cached_utf8_mb(Char);
+extern Char get_or_cache_utf8_mb(uint32_t inChar);
+extern uint32_t get_cached_utf8_mb(Char);
+extern void clear_utf8_maps();
 
 
 /*ARGSUSED*/
@@ -119,7 +120,8 @@ ReBufferDisplay(void)
 		b[i] = (Char *) xmalloc((size_t) (sizeof(*b[i]) * (TermH + 1)));
 	b[TermV] = NULL;
 	Vdisplay = b;
-
+	
+	clear_utf8_maps();
 }
 
 	void
