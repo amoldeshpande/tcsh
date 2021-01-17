@@ -441,8 +441,6 @@ int fork(void) {
 
 	CloseHandle(hThread);
 
-	// reset vt mode in case child process has messed with the console
-	nt_set_win10_vt_mode();
 
 	//
 	// return process id to parent.
