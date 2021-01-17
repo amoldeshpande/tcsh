@@ -503,13 +503,14 @@ int nt_feed_to_cmd(char *file,char **argv) {
 		restore_path(ptr);
 	}
 	else {
-		// reset vt mode in case child process has messed with the console
-		nt_set_win10_vt_mode();
-
 		restore_path(ptr);
 		CloseHandle(pi.hThread);
 		WaitForSingleObject(pi.hProcess,INFINITE);
 		CloseHandle(pi.hProcess);
+
+		// reset vt mode in case child process has messed with the console
+		nt_set_win10_vt_mode();
+
 		ExitProcess(0);
 	}
 
@@ -1046,8 +1047,6 @@ re_cp:
 		int gui_app ;
 		DWORD exitcode;
 		char guivar[50];
-		// reset vt mode in case child process has messed with the console
-		nt_set_win10_vt_mode();
 
 		if (GetEnvironmentVariable("TCSH_NOASYNCGUI",guivar,50))
 			gui_app=0;
@@ -1058,6 +1057,8 @@ re_cp:
 			WaitForSingleObject(pi.hProcess,INFINITE);
 			(void)GetExitCodeProcess(pi.hProcess,&exitcode);
 			setv(STRstatus, putn(exitcode), VAR_READWRITE);/*FIXRESET*/
+			// reset vt mode in case child process has messed with the console
+			nt_set_win10_vt_mode();
 		}
 		retval = 0;
 		CloseHandle(pi.hProcess);
