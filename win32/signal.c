@@ -511,6 +511,9 @@ void sigchild_thread(struct thread_args *args) {
 	sig_child_callback(args->pid,exitcode);
     dprintf("exiting sigchild thread for pid %d\n",args->pid);
 	heap_free(args);
+
+	// reset vt mode in case child process has messed with the console
+	nt_set_win10_vt_mode();
 }
 void start_sigchild_thread(HANDLE hproc, DWORD pid) {
 
