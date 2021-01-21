@@ -52,17 +52,18 @@ extern int nt_getsize(int*,int*,int*);
 extern int nt_ClearEOL( void) ;
 extern void NT_ClearEOD( void) ;
 extern void NT_ClearScreen(void) ;
-extern void NT_VisibleBell(void);
 extern void NT_WrapHorizontal(void);
 
 static int GetSize(int *lins, int *cols);
 
+#ifndef WINNT_NATIVE_UTF8_SUPPORT
 int DisplayWindowHSize;
 void
 terminit(void)
 {
 	return;
 }
+#endif //WINNT_NATIVE_UTF8_SUPPORT
 
 
 
@@ -73,7 +74,7 @@ extern Char get_or_cache_utf8_mb(uint32_t inChar);
 extern uint32_t get_cached_utf8_mb(Char);
 extern void clear_utf8_maps();
 
-
+#ifndef WINNT_NATIVE_UTF8_SUPPORT
 /*ARGSUSED*/
 	void
 TellTC(void)
@@ -123,7 +124,9 @@ ReBufferDisplay(void)
 	
 	clear_utf8_maps();
 }
+#endif
 
+#ifndef WINNT_NATIVE_UTF8_SUPPORT
 	void
 SetTC(char *what, char *how)
 {
@@ -318,6 +321,8 @@ MoveToChar(int where)
 	NT_MoveToLineOrChar(where, 0);
 	CursorH = where;		/* now where is here */
 }
+#endif // WINNT_NATIVE_UTF8_SUPPORT
+
 #ifdef WINNT_NATIVE_UTF8_SUPPORT
 Char nt_make_utf8_multibyte(Char* cp, int len) {
 
@@ -365,6 +370,7 @@ void putraw_utf8(Char c) {
 	putraw(c);
 #endif
 }
+#ifndef WINNT_NATIVE_UTF8_SUPPORT
 void
 so_write(register Char *cp, register int n)
 {
@@ -586,3 +592,11 @@ PutPlusOne(Char c, int width)
 		NT_MoveToLineOrChar(CursorH,0);
 	}
 }
+void StartHighlight(void)
+{
+}
+void StopHighlight(void)
+{
+}
+#endif // WINNT_NATIVE_UTF8_SUPPORT
+

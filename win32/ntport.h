@@ -472,6 +472,10 @@ extern int kill_by_wm_close(int ) ;
 extern int  is_gui(char*);
 extern int  is_9x_gui(char*);
 
+/* nt.screen.c*/
+extern void putraw_utf8(short c) ;
+extern void clear_utf8_maps();
+extern void NT_VisibleBell(void);
 
 /* Global variables */
 extern unsigned short __nt_want_vcode,__nt_vcode,__nt_really_exec;
