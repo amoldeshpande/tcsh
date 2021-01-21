@@ -1,5 +1,7 @@
 #include <unordered_map>
+extern "C" {
 #include <sh.h>
+};
 
 static std::unordered_map<uint32_t,Char> utf8_chars;
 static std::unordered_map<Char,uint32_t> reverse_map;
