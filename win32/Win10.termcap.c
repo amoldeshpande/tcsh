@@ -378,4 +378,6 @@ tputs(const char *cp, int affcnt, void (*outc)(int))
 		(*outc)(*cp++);
 	return;
 }
+#else
+#pragma warning(disable : 4206) //nonstandard extension used: translation unit is empty
 #endif
