@@ -1216,7 +1216,7 @@ RefCursor(void)
     flush();
 }
 
-#ifndef WINNT_NATIVE
+#ifdef WINNT_NATIVE_UTF8_SUPPORT
 static void
 PutPlusOne(Char c, int width)
 {

@@ -24,7 +24,7 @@ INCLUDES=-I. -I.. -Iwin32
 DEBUG_CRTLIBS= libcmtd.lib oldnames.lib  libcpmtd.lib libvcruntimed.lib libucrtd.lib legacy_stdio_definitions.lib legacy_stdio_wide_specifiers.lib
 CRTLIBS= libcmt.lib oldnames.lib libcpmt.lib libvcruntime.lib libucrt.lib legacy_stdio_definitions.lib legacy_stdio_wide_specifiers.lib
 
-EXTRAFLAGS = -DWINNT_NATIVE -DWINNT_NATIVE_UTF8_SUPPORT -DNO_CRYPT -DHAVE_DIRENT_H $(EFL) \
+EXTRAFLAGS = -DWINNT_NATIVE -DNO_CRYPT -DHAVE_DIRENT_H $(EFL) \
               -wd28159 -wd28218 -wd28199 -wd6387 -wd6385 -wd6553
 
 WINDOWS_WARNING_LEVEL=-W4 -WX
@@ -90,6 +90,10 @@ FASTFLAGS= -MP
 FASTTARGET=fastbuild
 !endif
 
+!if "$(NOUTF8)" == ""
+EXTRAFLAGS = $(EXTRAFLAGS) -DWINNT_NATIVE_UTF8_SUPPORT 
+!endif
+
 CFLAGS= -MT $(FASTFLAGS) $(NTCFLAGS) $(INCLUDES) 
 LDFLAGS= -nodefaultlib $(NTLDFLAGS) -stack:1048576,524288 -dynamicbase:no -ignore:4099
 
@@ -108,7 +112,7 @@ ASSRCS1=	sh.c sh.dir.c sh.err.c sh.exec.c sh.char.c \
 	sh.set.c sh.time.c 
 ASSRCS= $(ASSRCS1) sh.dol.c sh.glob.c sh.func.c sh.sem.c sh.proc.c 
 
-PSSRCS= glob.c mi.termios.c ma.setp.c vms.termcap.c
+PSSRCS= glob.c mi.termios.c ma.setp.c #vms.termcap.c
 
 SHSRCS= $(ASSRCS) $(PSSRCS)
 SHOBJS=	sh.$(SUF) sh.dir.$(SUF) sh.dol.$(SUF) sh.err.$(SUF) sh.exec.$(SUF) \
@@ -128,8 +132,16 @@ TWOBJS=	tw.help.$(SUF) tw.init.$(SUF) tw.parse.$(SUF) tw.spell.$(SUF) \
 EDSRCS1= ed.defns.c ed.init.c  ed.xmap.c ed.term.c 
 EDSRCS = $(EDSRCS1) ed.chared.c ed.inputl.c ed.refresh.c 
 
+!if "$(NOUTF8)" == ""
+EDSRCS = $(EDSRCS) ed.screen.c
+!endif
+
 EDOBJS=	ed.chared.$(SUF) ed.refresh.$(SUF) ed.init.$(SUF) \
-	ed.inputl.$(SUF) ed.defns.$(SUF) ed.xmap.$(SUF) ed.term.$(SUF)
+	ed.inputl.$(SUF) ed.defns.$(SUF) ed.xmap.$(SUF) ed.term.$(SUF) 
+
+!if "$(NOUTF8)" == ""
+EDOBJS = $(EDOBJS) ed.screen.$(SUF)
+!endif
 
 TCSRCS1= tc.const.c tc.disc.c \
 	tc.func.c tc.os.c tc.nls.c \
@@ -148,14 +160,14 @@ NTSRCS1 = win32\io.c win32\stdio.c win32\dirent.c win32\signal.c\
 		win32\nt.char.c win32\bogus.c win32\console.c \
 		win32\ntfunc.c win32\ntb1.c win32\ntb2.c win32\globals.c \
 		win32\ps.c win32\nt.const.c win32\clip.c\
-		win32\nt.bind.c  win32\nt.screen.c win32\utf8_chars.cpp
+		win32\nt.bind.c  win32\nt.screen.c win32\Win10.termcap.c win32\utf8_chars.cpp
 
 NTSRCS = $(NTSRCS1) win32\fork.c 
 
 NTOBJS = io.$(SUF) stdio.$(SUF) dirent.$(SUF) signal.$(SUF) support.$(SUF) \
 	    nt.char.$(SUF) bogus.$(SUF) console.$(SUF) fork.$(SUF) ntfunc.$(SUF) \
         globals.$(SUF)  ps.$(SUF) \
-		clip.$(SUF) nt.const.$(SUF) nt.bind.$(SUF) nt.screen.$(SUF) utf8_chars.$(SUF)
+		clip.$(SUF) nt.const.$(SUF) nt.bind.$(SUF) nt.screen.$(SUF) Win10.termcap.$(SUF) utf8_chars.$(SUF)
 
 VHSRCS=$(PVSRCS) $(AVSRCS)
 

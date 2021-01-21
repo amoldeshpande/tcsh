@@ -161,7 +161,7 @@ int NLSWidthMB(Char* cp, int*consumed)
 			break;
 		}
 	}
-	dprintf("NSLWidthMB returning %d consumed\n",*consumed);
+	//dprintf("NSLWidthMB returning %d consumed\n",*consumed);
 	return result;
 }
 int
