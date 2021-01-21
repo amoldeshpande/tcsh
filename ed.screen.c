@@ -435,6 +435,9 @@ ReBufferDisplay(void)
 	b[i] = xmalloc(sizeof(*b[i]) * (TermH + 1));
     b[TermV] = NULL;
     Vdisplay = b;
+#ifdef WINNT_NATIVE
+	clear_utf8_maps();
+#endif
 }
 
 void
