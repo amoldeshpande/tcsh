@@ -333,7 +333,11 @@ extern	void		  xputchar	(int);
 extern	void		  putwraw	(Char);
 extern	void		  xputwchar	(Char);
 #else
+#ifndef WINNT_NATIVE_UTF8_SUPPORT
 # define putwraw(C) putraw(C)
+#else
+# define putwraw(C) putraw_utf8(C)
+#endif
 # define xputwchar(C) xputchar(C)
 #endif
 extern	void		  output_raw_restore(void *);
