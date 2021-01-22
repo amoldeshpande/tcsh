@@ -53,6 +53,7 @@ extern void make_err_str(unsigned int ,char *,int ) ;
 extern void generic_handler(int);
 extern int console_write(HANDLE,unsigned char*,int);
 extern BOOL is_windows_10_or_greater() ;
+extern void window_change(int);
 
 int consoleread(HANDLE , unsigned char * ,size_t ) ;
 INPUT_RECORD girec[2048];
@@ -445,6 +446,9 @@ skippy:
 
 						alt_pressed=0;
 					}
+					break;
+				case WINDOW_BUFFER_SIZE_EVENT:
+					window_change(0);
 					break;
 				default:
 					break;
