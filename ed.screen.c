@@ -1558,6 +1558,12 @@ GetSize(int *lins, int *cols)
 # endif /* TIOCGSIZE */
 #endif /* TIOCGWINSZ */
 
+#ifdef WINNT_NATIVE
+	{
+		int ignore;
+		nt_getsize(lins,cols,&ignore);
+	}
+#endif
     return (Val(T_co) != *cols || Val(T_li) != *lins);
 }
 
