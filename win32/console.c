@@ -129,7 +129,7 @@ void nt_set_win10_vt_mode() {
             dprintf("getconsole mode for input failed %d\n",GetLastError());
 			return;
         }
-        if (!SetConsoleMode(ghstdin, dwmode | ENABLE_VIRTUAL_TERMINAL_INPUT)) {
+        if (!SetConsoleMode(ghstdin, dwmode | ENABLE_VIRTUAL_TERMINAL_INPUT | ENABLE_WINDOW_INPUT)) {
             return;
         }
 	  nt_is_windows_10_or_greater = TRUE;

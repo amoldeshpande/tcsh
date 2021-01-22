@@ -54,7 +54,9 @@ extern void NT_ClearEOD( void) ;
 extern void NT_ClearScreen(void) ;
 extern void NT_WrapHorizontal(void);
 
+#ifndef SIG_WINDOW
 static int GetSize(int *lins, int *cols);
+#endif
 
 #ifndef WINNT_NATIVE_UTF8_SUPPORT
 int DisplayWindowHSize;
@@ -522,6 +524,7 @@ GetTermCaps(void)
 
 	return;
 }
+#ifndef SIG_WINDOW
 /* GetSize():
  *	Return the new window size in lines and cols, and
  *	true if the size was changed.
@@ -548,6 +551,7 @@ GetSize(int *lins, int *cols)
 
 	return ret;
 }
+#endif // SIG_WINDOW
 	void
 ChangeSize(int lins, int cols)
 {
