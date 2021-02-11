@@ -30,6 +30,7 @@
 #include "ed.h"
 #include "ed.defns.h"
 
+#ifdef WINNT_NATIVE_NO_UTF8
 
 KEYCMD  CcEmacsMap[] = {
 	/* keymap table, each index into above tbl; should be 
@@ -1348,3 +1349,4 @@ Char nt_translate_bindkey(const Char*s) {
 
 	return keycode;
 }
+#endif // WINNT_NATIVE_NO_UTF8
