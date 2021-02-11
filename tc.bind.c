@@ -140,7 +140,7 @@ dobindkey(Char **v, struct command *c)
     }
     cleanup_push(in.buf, xfree);
 
-#ifndef WINNT_NATIVE
+#ifndef WINNT_NATIVE_NO_UTF8
     if (in.buf[0] > 0xFF) {
 	bad_spec(in.buf);
 	cleanup_until(in.buf);
@@ -291,7 +291,7 @@ parsebind(const Char *s, CStr *str)
     case 'M':
     case 'X':
     case 'C':
-#ifdef WINNT_NATIVE
+#ifdef WINNT_NATIVE_NO_UTF8
     case 'N':
 #endif /* WINNT_NATIVE */
 	if (s[1] != '-' || s[2] == '\0')
@@ -333,7 +333,7 @@ parsebind(const Char *s, CStr *str)
 #endif
 	    }
 	    break;
-#ifdef WINNT_NATIVE
+#ifdef WINNT_NATIVE_NO_UTF8
 	case 'N' : case 'n':	/* NT */
 		{
 			Char bnt;
