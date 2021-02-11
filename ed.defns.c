@@ -287,7 +287,7 @@ KEYCMD  CcAltMap[NT_NUM_KEYS] INIT_ZERO_STRUCT;		/* the alternative key map */
 #define	F_NUM_FUNCNAMES	(F_NUM_FNS + 2)
 struct KeyFuncs FuncNames[F_NUM_FUNCNAMES] INIT_ZERO_STRUCT;
 
-#ifdef WINNT_NATIVE
+#ifdef WINNT_NATIVE_NO_UTF8
 extern KEYCMD CcEmacsMap[];
 extern KEYCMD CcViMap[];
 extern KEYCMD  CcViCmdMap[];
