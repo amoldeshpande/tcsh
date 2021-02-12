@@ -200,6 +200,7 @@ mode Value	Checks File For
 #define R_OK 4
 #define XD_OK 9 //executable and not directory
 
+#ifdef WINNT_NATIVE_NO_UTF8
 /* base key mappings + ctrl-key mappings + alt-key mappings */
 /* see nt.bind.c  to figure these out */
 /*  256 + 
@@ -221,6 +222,7 @@ mode Value	Checks File For
 #define CTRL_KEY_OFFSET            34
 #define ALT_KEY_OFFSET             (34*2)
 #define SHIFT_KEY_OFFSET           (34*3)
+#endif
 
 typedef int pid_t;
 typedef int speed_t;
