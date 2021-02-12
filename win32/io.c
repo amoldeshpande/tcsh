@@ -333,6 +333,7 @@ int consoleread(HANDLE hInput, unsigned char * buf,size_t howmany) {
 						if (__nt_want_vcode != 1)
 							goto skippy;
 
+#ifdef WINNT_NATIVE_NO_UTF8
 						if (vcode >= VK_F1 && vcode <= VK_F24) {
 
 							__nt_vcode=NT_SPECIFIC_BINDING_OFFSET ;
@@ -402,6 +403,7 @@ int consoleread(HANDLE hInput, unsigned char * buf,size_t howmany) {
 
 							return 1;
 						}
+#endif // WINNT_NATIVE_NO_UTF8
 skippy:
 						switch(vcode) {
 							case VK_ESCAPE:
