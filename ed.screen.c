@@ -1032,7 +1032,7 @@ MoveToLine(int where)
     if (del > 0) {
 	while (del > 0) {
 	    if ((T_Margin & MARGIN_AUTO) && Display[CursorV][0] != '\0') {
-		size_t h;
+		unsigned int h;
 
 		for (h = TermH - 1; h > 0 && Display[CursorV][h] == CHAR_DBWIDTH;
 		     h--)
@@ -1145,7 +1145,8 @@ mc_again:
 void
 so_write(Char *cp, int n)
 {
-    int cur_pos, prompt_len = 0, region_start = 0, region_end = 0;
+    int cur_pos;
+	ptrdiff_t prompt_len = 0, region_start = 0, region_end = 0;
 
     if (n <= 0)
 	return;			/* catch bugs */
