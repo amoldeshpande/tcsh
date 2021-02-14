@@ -100,7 +100,7 @@ extern KEYCMD NumFuns;		/* number of KEYCMDs in above table */
 
 typedef struct {
     Char *buf;
-    int   len;
+    size_t   len;
 } CStr;
 
 typedef union {		/* value passed to the Xkey routines */
