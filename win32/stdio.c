@@ -76,11 +76,11 @@ void init_stdio(void) {
 	__gOpenFiles[1].handle = GetStdHandle(STD_OUTPUT_HANDLE);
 	__gOpenFiles[2].handle = GetStdHandle(STD_ERROR_HANDLE);
 
-	__gOpenFiles[0].flags = (GetFileType(ULongToPtr(STD_INPUT_HANDLE))== 
+	__gOpenFiles[0].flags = (GetFileType(GetStdHandle(STD_INPUT_HANDLE))== 
 			FILE_TYPE_CHAR)?  FCONSOLE:0;
-	__gOpenFiles[1].flags = (GetFileType(ULongToPtr(STD_OUTPUT_HANDLE))== 
+	__gOpenFiles[1].flags = (GetFileType(GetStdHandle(STD_OUTPUT_HANDLE))== 
 			FILE_TYPE_CHAR)?  FCONSOLE:0;
-	__gOpenFiles[2].flags = (GetFileType(ULongToPtr(STD_ERROR_HANDLE))==
+	__gOpenFiles[2].flags = (GetFileType(GetStdHandle(STD_ERROR_HANDLE))==
 			FILE_TYPE_CHAR)?  FCONSOLE:0;
 
 	for(i=3;i<__MAX_OPEN_FILES;i++) {
