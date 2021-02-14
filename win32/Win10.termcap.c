@@ -35,8 +35,6 @@
 #include "sh.h"
 
 
-extern int nt_getsize(int*,int*,int*);
-
 #define CAPABLEN	2
 
 #define ISSPACE(c)  ((c) == ' ' || (c) == '\t' || (c) == '\r' || (c) == '\n')

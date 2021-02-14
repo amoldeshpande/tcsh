@@ -1,3 +1,4 @@
+#ifndef WINNT_NATIVE_UTF8_SUPPORT
 /*
  * ed.screen.c: Editor/termcap-curses interface
  */
@@ -30,8 +31,6 @@
  * SUCH DAMAGE.
  */
 #include "sh.h"
-
-
 #include "ed.h"
 #include "tc.h"
 #include "ed.defns.h"
@@ -54,29 +53,21 @@ extern void NT_ClearEOD( void) ;
 extern void NT_ClearScreen(void) ;
 extern void NT_WrapHorizontal(void);
 
-#ifndef SIG_WINDOW
-static int GetSize(int *lins, int *cols);
-#endif
+int GetSize(int *lins, int *cols);
 
-#ifndef WINNT_NATIVE_UTF8_SUPPORT
 int DisplayWindowHSize;
 void
 terminit(void)
 {
 	return;
 }
-#endif //WINNT_NATIVE_UTF8_SUPPORT
 
 
 
 int T_ActualWindowSize;
 
 static	void	ReBufferDisplay	(void);
-extern Char get_or_cache_utf8_mb(uint32_t inChar);
-extern uint32_t get_cached_utf8_mb(Char);
-extern void clear_utf8_maps();
 
-#ifndef WINNT_NATIVE_UTF8_SUPPORT
 /*ARGSUSED*/
 	void
 TellTC(void)
@@ -126,9 +117,7 @@ ReBufferDisplay(void)
 	
 	clear_utf8_maps();
 }
-#endif
 
-#ifndef WINNT_NATIVE_UTF8_SUPPORT
 	void
 SetTC(char *what, char *how)
 {
@@ -323,56 +312,7 @@ MoveToChar(int where)
 	NT_MoveToLineOrChar(where, 0);
 	CursorH = where;		/* now where is here */
 }
-#endif // WINNT_NATIVE_UTF8_SUPPORT
 
-#ifdef WINNT_NATIVE_UTF8_SUPPORT
-Char nt_make_utf8_multibyte(Char* cp, int len) {
-
-	uint32_t mbchar = 0;
-
-	if(len == 1){
-		return *cp;
-	}
-	for(Char i = 0; i < len;i++) {
-		mbchar <<= 8;
-		mbchar |= *cp;
-		cp++;
-	}
-	Char i = get_or_cache_utf8_mb(mbchar);
-	return i | NT_UTF8_MB;
-}
-#endif // WINNT_NATIVE_UTF8_SUPPORT
-void putraw_utf8(Char c) {
-#if defined(WINNT_NATIVE_UTF8_SUPPORT)
-	if (c & NT_UTF8_MB) {
-		Char index = c & ~NT_UTF8_MB;
-		if (index >= 0 && index < NT_UTF8_MB) {
-			uint32_t mbchar = get_cached_utf8_mb(index);
-			int start = 0;
-			//
-			// there have to be at least 2 bytes in the utf8 sequence
-			// (otherwise we would not have marked it with NT_UTF8_MB.)
-			// 
-			if ((mbchar & 0xFF000000) == 0) {
-				start++;
-			}
-			if((mbchar & 0xFFFF0000) == 0) {
-				start = 2;
-			}
-			for(int i =start; i < 4;i++) {
-				unsigned char by = (mbchar >> (3-i)*8) & 0xFF;
-				putraw(by);
-			}
-		}
-	}
-	else {
-		putraw(c);
-	}
-#else
-	putraw(c);
-#endif
-}
-#ifndef WINNT_NATIVE_UTF8_SUPPORT
 void
 so_write(register Char *cp, register int n)
 {
@@ -524,12 +464,11 @@ GetTermCaps(void)
 
 	return;
 }
-#ifndef SIG_WINDOW
 /* GetSize():
  *	Return the new window size in lines and cols, and
  *	true if the size was changed.
  */
-	int
+int
 GetSize(int *lins, int *cols)
 {
 
@@ -551,8 +490,7 @@ GetSize(int *lins, int *cols)
 
 	return ret;
 }
-#endif // SIG_WINDOW
-	void
+void
 ChangeSize(int lins, int cols)
 {
 
@@ -602,5 +540,7 @@ void StartHighlight(void)
 void StopHighlight(void)
 {
 }
+#else
+#pragma warning(disable : 4206) //nonstandard extension used: translation unit is empty
 #endif // WINNT_NATIVE_UTF8_SUPPORT
 
