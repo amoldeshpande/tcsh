@@ -417,6 +417,7 @@ extern void nt_set_size(int,int);
 //extern void set_raw_mode(HANDLE);
 //extern void set_arbitrary_mode(HANDLE,DWORD);
 extern void set_attributes(const unsigned char *color);
+extern int nt_getsize(int*,int*,int*);
 
 /* ../sh.exec.c */
 extern int nt_check_if_windir(char *);
