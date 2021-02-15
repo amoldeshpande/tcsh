@@ -1367,7 +1367,7 @@ rechist(Char *xfname, int ref)
 #ifndef WINNT_NATIVE
     (void)rename(path, short2str(fname));
 #else
-    (void)MoveFileEx( short2str(fname),path,MOVEFILE_REPLACE_EXISTING);
+    (void)MoveFileEx(path, short2str(fname),MOVEFILE_REPLACE_EXISTING);
 #endif
     cleanup_until(fname);
     phup_disabled = ophup_disabled;
