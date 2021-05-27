@@ -504,7 +504,7 @@ void heap_init(void) {
 	else {
 		SYSTEM_INFO sysinfo;
 		GetSystemInfo(&sysinfo);
-		__heap_size = sysinfo.dwPageSize * 1024;
+		__heap_size = sysinfo.dwPageSize * 4096;
 		__heap_base = VirtualAlloc(0 , __heap_size,MEM_RESERVE|MEM_TOP_DOWN,
 				PAGE_READWRITE);
 
