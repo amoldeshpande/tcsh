@@ -44,6 +44,7 @@ static HMODULE hlangdll;
 extern DWORD gdwPlatform;
 
 
+#if !defined(WINNT_NATIVE_UTF8_SUPPORT)
 unsigned char oem_it(unsigned char ch) {
 	unsigned char ch1[2],ch2[2];
 
@@ -54,6 +55,11 @@ unsigned char oem_it(unsigned char ch) {
 
 	return ch2[0];
 }
+#else
+unsigned char oem_it(unsigned char ch) {
+	return ch;
+}
+#endif
 void nls_dll_unload(void) {
 	FreeLibrary(hlangdll);
 	hlangdll=NULL;
@@ -124,3 +130,44 @@ void nls_dll_init(void) {
 		free(ptr);
 	}
 }
+#ifdef WINNT_NATIVE_UTF8_SUPPORT
+int NLSWidth(Char c)
+{
+	WCHAR out;
+	int result = MultiByteToWideChar(CP_UTF8, MB_ERR_INVALID_CHARS,(char*)&c,1,&out, 1);
+	return (result > 0 ? result : -1);
+}
+int NLSWidthMB(Char* cp, int*consumed)
+{
+	int result = 0;
+	WCHAR out;
+	char four[4];
+	int len = 4;
+
+	*consumed = 0;
+
+	for(int i = 0; i < 4 ;i++) {
+		four[i] = *cp & CHAR;
+		if(!*cp) {
+			len = i ;
+			break;
+		}
+		cp++;
+	}
+	for(int i = 0; i < len; i++) {
+		result = MultiByteToWideChar(CP_UTF8, MB_ERR_INVALID_CHARS,four,i+1,&out, 0);
+		if(result > 0) {
+			*consumed = i+1;
+			break;
+		}
+	}
+	dprintf("NSLWidthMB returning %d consumed\n",*consumed);
+	return result;
+}
+int
+NLSStringWidth(const Char *s)
+{
+	return (int)Strlen(s);
+}
+#endif// WINNT_NATIVE_UTF8_SUPPORT
+

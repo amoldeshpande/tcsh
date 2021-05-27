@@ -363,24 +363,17 @@ Ditto for page down.
 
 Literal Prompt Characters
 -------------------------
-tcsh uses a special syntax for embedding literal character sequences in the
-prompt. For example, ANSI escapes.
-Thus, if you did
-set prompt='%{<ESC>[44mfoo%}\>', 
-this will print the prompt in the appropriate colors.
+ANSI literal escapes are supported internally since 6-07.09. If Windows 10 is
+detected, tcsh will attempt to use the built-in OS support, which provides
+more comprehensive support up to xterm-256 color.
 
-The color-ls patch in 6.07.09 implements parsing for ANSI escapes. To keep
-the prompt specification consistent with the availablity of this feature,
-the literal string will now accept ANSI escapes like color-ls would.
+# (Experimental) Emoji and other Unicode glyph support
+If compiled with WINNT_NATIVE_UTF8_SUPPORT (default in this branch), 
+unicode emojis etc. as used with "Oh My Posh" are supported.  Since this 
+feature has not been tested on non-US-English locales, 
+it is not currently in the master branch of source. If the shell 
+version contains "nt-rev-9.00" and "utf8", this support is present. 
 
-    set prompt='%{^[[1;34m%}%c03%{^[[0m%}\>'
-	set prompt3='%{^[[1;31m%}Correct to %R ?(y|n|e)%{^[[0m%} '
-#
-#
-
-ls-F is noticeably slow if color is set. This is especially true on slower
-machines (P100, for example). You may not want to set it for those kinds
-of systems. More so if you already have an external color-ls.
 
 watch:
 -----

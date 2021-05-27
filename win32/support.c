@@ -74,7 +74,6 @@ void do_nothing(const wchar_t *p1, const wchar_t *p2, const wchar_t*p3,
 }
 void nt_init(void) {
 
-
 #ifdef SECURE_CD
 	{
 		char temp[512];/*FIXBUF*/
@@ -85,6 +84,7 @@ void nt_init(void) {
 	}
 #endif SECURE_CD
 	_set_invalid_parameter_handler(do_nothing);
+	setlocale(LC_ALL,".UTF8");
 	init_stdio();
 	nt_init_signals();
 	nt_term_init();
@@ -558,6 +558,10 @@ void silly_entry(void *peb) {
 	char ptr3[MAX_PATH];
 	OSVERSIONINFO osver;
 
+#ifdef WINNT_NATIVE_UTF8_SUPPORT
+	SetConsoleCP(CP_UTF8);
+	SetConsoleOutputCP(CP_UTF8);
+#endif
 	osver.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
 
 #pragma warning(suppress:4996 28159) //deprecated function
@@ -645,7 +649,9 @@ void silly_entry(void *peb) {
 #endif _M_IX86
 
 
-	SetFileApisToOEM();
+#ifdef WINNT_NATIVE_UTF8_SUPPORT
+	SetFileApisToANSI();
+#endif// WINNT_NATIVE_UTF8_SUPPORT
 
 	if (!bIsWow64Process)
 		heap_init();
