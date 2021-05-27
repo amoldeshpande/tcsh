@@ -435,6 +435,9 @@ ReBufferDisplay(void)
 	b[i] = xmalloc(sizeof(*b[i]) * (TermH + 1));
     b[TermV] = NULL;
     Vdisplay = b;
+#ifdef WINNT_NATIVE
+	clear_utf8_maps();
+#endif
 }
 
 void
@@ -1555,6 +1558,12 @@ GetSize(int *lins, int *cols)
 # endif /* TIOCGSIZE */
 #endif /* TIOCGWINSZ */
 
+#ifdef WINNT_NATIVE
+	{
+		int ignore;
+		nt_getsize(lins,cols,&ignore);
+	}
+#endif
     return (Val(T_co) != *cols || Val(T_li) != *lins);
 }
 

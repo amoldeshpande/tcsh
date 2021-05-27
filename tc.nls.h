@@ -33,16 +33,18 @@
 #ifndef _h_tc_nls
 #define _h_tc_nls
 
-#ifdef WIDE_STRINGS
+#if defined(WIDE_STRINGS)|| defined(WINNT_NATIVE_UTF8_SUPPORT)
 extern int NLSWidth(Char);
+extern int NLSWidthMB(Char*, int*);
 extern int NLSStringWidth (const Char *);
 #else
 # define NLSStringWidth(s) Strlen(s)
 # define NLSWidth(c) 1
+# define NLSWidthMB(c,d) *d=1,1
 #endif
 
 extern Char *NLSChangeCase (const Char *, int);
-extern int NLSClassify (Char, int, int);
+extern int NLSClassifyMB(Char*, int, int,int*);
 
 #define NLSCLASS_CTRL		(-1)
 #define NLSCLASS_TAB		(-2)

@@ -117,7 +117,7 @@
  *		only output, when "dspmbyte" is set. Should be used with
  *		KANJI
  */
-#if defined (SHORT_STRINGS) && !defined (WIDE_STRINGS)
+#if defined (SHORT_STRINGS) && !defined (WIDE_STRINGS) && !defined(WINNT_NATIVE_UTF8_SUPPORT)
 # define DSPMBYTE
 #endif
 

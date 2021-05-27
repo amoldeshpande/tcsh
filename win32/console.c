@@ -65,6 +65,7 @@ static int nt_is_raw;
 // Seems to have helped the speed a bit. -amol
 //
 HANDLE ghstdout;
+HANDLE ghstdin;
 HANDLE ghReverse;
 
 //
@@ -74,12 +75,17 @@ void redo_console(void) {
 
 	CONSOLE_SCREEN_BUFFER_INFO scrbuf;
 	HANDLE hTemp= GetStdHandle(STD_OUTPUT_HANDLE);
+	HANDLE hInTemp = GetStdHandle(STD_INPUT_HANDLE);
 	WORD dbga;
 	DWORD wrote;
 	COORD origin = {0,0};
 
 	if (!DuplicateHandle(GetCurrentProcess(),hTemp,GetCurrentProcess(),
 				&ghstdout,0,TRUE,DUPLICATE_SAME_ACCESS) ) {
+		;
+	}
+	if (!DuplicateHandle(GetCurrentProcess(),hInTemp,GetCurrentProcess(),
+				&ghstdin,0,TRUE,DUPLICATE_SAME_ACCESS) ) {
 		;
 	}
 
@@ -117,6 +123,13 @@ void nt_set_win10_vt_mode() {
 			return;
         }
         if (!SetConsoleMode(ghstdout, dwmode | ENABLE_VIRTUAL_TERMINAL_PROCESSING)) {
+            return;
+        }
+        if (!GetConsoleMode(ghstdin, &dwmode)) {
+            dprintf("getconsole mode for input failed %d\n",GetLastError());
+			return;
+        }
+        if (!SetConsoleMode(ghstdin, dwmode | ENABLE_VIRTUAL_TERMINAL_INPUT | ENABLE_WINDOW_INPUT)) {
             return;
         }
 	  nt_is_windows_10_or_greater = TRUE;
@@ -644,10 +657,4 @@ void set_attributes(const unsigned char *color) {
 		wAttributes = (wAttributes & COMMON_LVB_UNDERSCORE)
 			| ((wAttributes & 0x00f0) >> 4) | ((wAttributes & 0x000f) << 4);
 	SetConsoleTextAttribute(ghstdout, wAttributes);
-}
-void StartHighlight(void)
-{
-}
-void StopHighlight(void)
-{
 }

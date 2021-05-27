@@ -53,6 +53,7 @@ extern void make_err_str(unsigned int ,char *,int ) ;
 extern void generic_handler(int);
 extern int console_write(HANDLE,unsigned char*,int);
 extern BOOL is_windows_10_or_greater() ;
+extern void window_change(int);
 
 int consoleread(HANDLE , unsigned char * ,size_t ) ;
 INPUT_RECORD girec[2048];
@@ -332,6 +333,7 @@ int consoleread(HANDLE hInput, unsigned char * buf,size_t howmany) {
 						if (__nt_want_vcode != 1)
 							goto skippy;
 
+#ifdef WINNT_NATIVE_NO_UTF8
 						if (vcode >= VK_F1 && vcode <= VK_F24) {
 
 							__nt_vcode=NT_SPECIFIC_BINDING_OFFSET ;
@@ -401,6 +403,7 @@ int consoleread(HANDLE hInput, unsigned char * buf,size_t howmany) {
 
 							return 1;
 						}
+#endif // WINNT_NATIVE_NO_UTF8
 skippy:
 						switch(vcode) {
 							case VK_ESCAPE:
@@ -427,7 +430,7 @@ skippy:
 									   )
 										ch = 0;
 									if (alt_pressed) {
-#ifdef DSPMBYTE
+#if defined(DSPMBYTE) || (WINNT_NATIVE_UTF8_SUPPORT)
 										buf[where++] = '\033';
 										if (howmany == 1)
 											pre_ch = ch;
@@ -445,6 +448,9 @@ skippy:
 
 						alt_pressed=0;
 					}
+					break;
+				case WINDOW_BUFFER_SIZE_EVENT:
+					window_change(0);
 					break;
 				default:
 					break;

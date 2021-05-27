@@ -1,3 +1,4 @@
+#ifndef WINNT_NATIVE_UTF8_SUPPORT
 /*
  * ed.screen.c: Editor/termcap-curses interface
  */
@@ -30,8 +31,6 @@
  * SUCH DAMAGE.
  */
 #include "sh.h"
-
-
 #include "ed.h"
 #include "tc.h"
 #include "ed.defns.h"
@@ -52,13 +51,12 @@ extern int nt_getsize(int*,int*,int*);
 extern int nt_ClearEOL( void) ;
 extern void NT_ClearEOD( void) ;
 extern void NT_ClearScreen(void) ;
-extern void NT_VisibleBell(void);
 extern void NT_WrapHorizontal(void);
 
-static int GetSize(int *lins, int *cols);
+int GetSize(int *lins, int *cols);
 
 int DisplayWindowHSize;
-	void
+void
 terminit(void)
 {
 	return;
@@ -69,7 +67,6 @@ terminit(void)
 int T_ActualWindowSize;
 
 static	void	ReBufferDisplay	(void);
-
 
 /*ARGSUSED*/
 	void
@@ -117,6 +114,8 @@ ReBufferDisplay(void)
 		b[i] = (Char *) xmalloc((size_t) (sizeof(*b[i]) * (TermH + 1)));
 	b[TermV] = NULL;
 	Vdisplay = b;
+	
+	clear_utf8_maps();
 }
 
 	void
@@ -304,7 +303,6 @@ MoveToChar(int where)
 	}
 
 	if (!where) {		/* if where is first column */
-		//(void) putraw('\r');	/* do a CR */
 		NT_MoveToLineOrChar(where, 0);
 		flush();
 		CursorH = 0;
@@ -315,7 +313,7 @@ MoveToChar(int where)
 	CursorH = where;		/* now where is here */
 }
 
-	void
+void
 so_write(register Char *cp, register int n)
 {
 	if (n <= 0)
@@ -331,10 +329,10 @@ so_write(register Char *cp, register int n)
 
 			for (d = litptr + (*cp++ & ~LITERAL) * LIT_FACTOR; *d;
 					d++)
-				(void) putraw(*d);
+				(void) putraw_utf8(*d);
 		}
 		else
-			(void) putraw(*cp++);
+			(void) putraw_utf8(*cp++);
 		CursorH++;
 	} while (--n);
 
@@ -470,7 +468,7 @@ GetTermCaps(void)
  *	Return the new window size in lines and cols, and
  *	true if the size was changed.
  */
-	int
+int
 GetSize(int *lins, int *cols)
 {
 
@@ -492,7 +490,7 @@ GetSize(int *lins, int *cols)
 
 	return ret;
 }
-	void
+void
 ChangeSize(int lins, int cols)
 {
 
@@ -536,3 +534,13 @@ PutPlusOne(Char c, int width)
 		NT_MoveToLineOrChar(CursorH,0);
 	}
 }
+void StartHighlight(void)
+{
+}
+void StopHighlight(void)
+{
+}
+#else
+#pragma warning(disable : 4206) //nonstandard extension used: translation unit is empty
+#endif // WINNT_NATIVE_UTF8_SUPPORT
+

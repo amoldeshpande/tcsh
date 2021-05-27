@@ -197,6 +197,7 @@ mode Value	Checks File For
 #define R_OK 4
 #define XD_OK 9 //executable and not directory
 
+#ifdef WINNT_NATIVE_NO_UTF8
 /* base key mappings + ctrl-key mappings + alt-key mappings */
 /* see nt.bind.c  to figure these out */
 /*  256 + 
@@ -218,6 +219,7 @@ mode Value	Checks File For
 #define CTRL_KEY_OFFSET            34
 #define ALT_KEY_OFFSET             (34*2)
 #define SHIFT_KEY_OFFSET           (34*3)
+#endif
 
 typedef int pid_t;
 typedef int speed_t;
@@ -386,6 +388,7 @@ extern char *nt_cgets(int,int,char*);
 extern void nls_dll_init(void);
 extern void nls_dll_unload(void);
 extern void nt_autoset_dspmbyte(void);
+extern short nt_make_utf8_multibyte(short*, int len);
 
 /* fork.c */
 extern int fork_init(void);
@@ -411,6 +414,7 @@ extern void nt_set_size(int,int);
 //extern void set_raw_mode(HANDLE);
 //extern void set_arbitrary_mode(HANDLE,DWORD);
 extern void set_attributes(const unsigned char *color);
+extern int nt_getsize(int*,int*,int*);
 
 /* ../sh.exec.c */
 extern int nt_check_if_windir(char *);
@@ -468,6 +472,10 @@ extern int kill_by_wm_close(int ) ;
 extern int  is_gui(char*);
 extern int  is_9x_gui(char*);
 
+/* nt.screen.c*/
+extern void putraw_utf8(short c) ;
+extern void clear_utf8_maps();
+extern void NT_VisibleBell(void);
 
 /* Global variables */
 extern unsigned short __nt_want_vcode,__nt_vcode,__nt_really_exec;

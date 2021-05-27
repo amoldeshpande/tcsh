@@ -285,51 +285,7 @@ using English versions, do not install the dlls)
 
 Virtual key code bindings:
 -------------------------
-To use keys like function keys, arrows, insert, etc., the following 
-form of bindkey must be used:
-
-bindkey -b N-xxx <command>
-
-where xxx is either:
-	a) A number from 1 through 24, representing the fucntion keys.
-	For example, bindkey -b N-1 run-help
-
-	b) The strings "pgup","pgdown","end","home", "left","up","right","down",
-	"ins","del"
-	For example, bindkey -b N-del delete-char
-
-Here are the bindings I use in my .tcshrc:
-
-# NT specific bindkey extensions
-	bindkey -b N-up up-history           
-	bindkey -b N-down down-history      
-	bindkey -b N-right forward-char    
-	bindkey -b N-left backward-char
-	bindkey -b N-del delete-char
-	bindkey -b N-ins overwrite-mode
-	bindkey -b N-1 which-command
-	bindkey -b N-2 expand-history
-	bindkey -b N-3 complete-word-raw
-	bindkey -b N-home beginning-of-line
-	bindkey -b N-end end-of-line
-
-	bindkey -b N-pgup e_page_up
-	bindkey -b N-pgdown e_page_down
-
-(Note that on Win9x, you must set your console window to NOT be Auto
-sized, and you must use the "settc" builtin to increase and then reduce
-back the number of lines, in order to get a scrollbar. pgup and
-pgdown will not work without a scroll bar)
-
-
-To bind ctrl or alt combinations, use the following as examples.
-
-	bindkey -b N-C-left backward-word
-	bindkey -b N-M-right forward-word    
-
-For Shift combinations:
-	bindkey -b N-S-1 backward-word
-
+Now the same as any xterm-256-color terminal
 
 e_dosify_next
 -------------
@@ -363,24 +319,17 @@ Ditto for page down.
 
 Literal Prompt Characters
 -------------------------
-tcsh uses a special syntax for embedding literal character sequences in the
-prompt. For example, ANSI escapes.
-Thus, if you did
-set prompt='%{<ESC>[44mfoo%}\>', 
-this will print the prompt in the appropriate colors.
+ANSI literal escapes are supported internally since 6-07.09. If Windows 10 is
+detected, tcsh will attempt to use the built-in OS support, which provides
+more comprehensive support up to xterm-256 color.
 
-The color-ls patch in 6.07.09 implements parsing for ANSI escapes. To keep
-the prompt specification consistent with the availablity of this feature,
-the literal string will now accept ANSI escapes like color-ls would.
+# (Experimental) Emoji and other Unicode glyph support
+If compiled with WINNT_NATIVE_UTF8_SUPPORT (default in this branch), 
+unicode emojis etc. as used with "Oh My Posh" are supported.  Since this 
+feature has not been tested on non-US-English locales, 
+it is not currently in the master branch of source. If the shell 
+version contains "nt-rev-9.00" and "utf8", this support is present. 
 
-    set prompt='%{^[[1;34m%}%c03%{^[[0m%}\>'
-	set prompt3='%{^[[1;31m%}Correct to %R ?(y|n|e)%{^[[0m%} '
-#
-#
-
-ls-F is noticeably slow if color is set. This is especially true on slower
-machines (P100, for example). You may not want to set it for those kinds
-of systems. More so if you already have an external color-ls.
 
 watch:
 -----
