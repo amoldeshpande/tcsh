@@ -480,8 +480,7 @@ void heap_init(void) {
 	char * temp;
 	int err;
 	if (__forked) {
-		// reserve some extra heap in the child, just in case
-		temp = (char *)VirtualAlloc((void*)__heap_base,__heap_size*2, MEM_RESERVE,
+		temp = (char *)VirtualAlloc((void*)__heap_base,__heap_size, MEM_RESERVE,
 				PAGE_READWRITE);
 		if (temp != (char*)__heap_base) {
 			if (!temp){
