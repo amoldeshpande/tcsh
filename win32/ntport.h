@@ -157,6 +157,9 @@ pretty */
 #define setpgrp(a,b) (-1)
 #define tcsetattr(a,b,c) 0
 
+#define strcasecmp(a,b) stricmp((a),(b))
+#define readlink(a,b,c) -1
+
 #define inline __inline
 
 #undef stdin
