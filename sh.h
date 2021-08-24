@@ -1028,6 +1028,7 @@ EXTERN struct varent {
  * The following are for interfacing redo substitution in
  * aliases to the lexical routines.
  */
+#define HIST_PURGE	-500000
 EXTERN struct wordent *alhistp IZERO;/* Argument list (first) */
 EXTERN struct wordent *alhistt IZERO;/* Node after last in arg list */
 EXTERN Char  **alvec IZERO,
