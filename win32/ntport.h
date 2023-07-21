@@ -410,6 +410,7 @@ extern int do_nt_check_cooked_mode(void);
 extern void set_cons_attr (char *);
 extern void NT_MoveToLineOrChar(int ,int ) ;
 extern void nt_set_win10_vt_mode(void);
+extern void nt_unset_win10_vt_mode(void);
 extern void nt_term_init(void);
 extern void nt_term_cleanup(void);
 extern void nt_set_size(int,int);
