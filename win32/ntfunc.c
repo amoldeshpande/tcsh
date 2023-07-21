@@ -251,6 +251,7 @@ void dostart(Char ** vc, struct command *c) {
 	 */
 
 	savepath = fix_path_for_child();
+	nt_unset_win10_vt_mode();
 
 	if (! CreateProcess(NULL,
 				cmdstr,
@@ -310,14 +311,14 @@ void dostart(Char ** vc, struct command *c) {
 		}
 	}
 	else {
-		// reset vt mode in case child process has messed with the console
-		nt_set_win10_vt_mode();
 		CloseHandle(pi.hProcess);
 		CloseHandle(pi.hThread);
 
 		heap_free(cmdstr);
 		restore_path(savepath);
 	}
+	// reset vt mode in case child process has messed with the console
+	nt_set_win10_vt_mode();
 	blkfree((Char **)v);
 	return;
 }
@@ -489,6 +490,7 @@ int nt_feed_to_cmd(char *file,char **argv) {
 	}
 
 	ptr = fix_path_for_child();
+	nt_unset_win10_vt_mode();
 
 	if (!CreateProcess(NULL,
 				cmdbuf,
@@ -508,11 +510,10 @@ int nt_feed_to_cmd(char *file,char **argv) {
 		WaitForSingleObject(pi.hProcess,INFINITE);
 		CloseHandle(pi.hProcess);
 
-		// reset vt mode in case child process has messed with the console
-		nt_set_win10_vt_mode();
-
 		ExitProcess(0);
 	}
+	// reset vt mode in case child process has messed with the console
+	nt_set_win10_vt_mode();
 
 	return 1; /*NOTREACHED*/
 }
@@ -1013,6 +1014,7 @@ int nt_texec(char *prog, char**args ) {
 		}while(retries < 3);
 	}
 	savepath = fix_path_for_child();
+	nt_unset_win10_vt_mode();
 re_cp:
 	dprintf("nt_texec cmdstr %s\n",cmdstr);
 
@@ -1057,13 +1059,13 @@ re_cp:
 			WaitForSingleObject(pi.hProcess,INFINITE);
 			(void)GetExitCodeProcess(pi.hProcess,&exitcode);
 			setv(STRstatus, putn(exitcode), VAR_READWRITE);/*FIXRESET*/
-			// reset vt mode in case child process has messed with the console
-			nt_set_win10_vt_mode();
 		}
 		retval = 0;
 		CloseHandle(pi.hProcess);
 		CloseHandle(pi.hThread);
 	}
+	// reset vt mode in case child process has messed with the console
+	nt_set_win10_vt_mode();
 free_mem:
 	CloseHandle(si.hStdInput);
 	CloseHandle(si.hStdOutput);
