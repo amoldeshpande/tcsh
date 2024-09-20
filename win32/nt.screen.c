@@ -505,6 +505,7 @@ ChangeSize(int lins, int cols)
 	ReBufferDisplay();		/* re-make display buffers */
 	ClearDisp();
 }
+#ifndef WINNT_NATIVE_UTF8_SUPPORT
 	void
 PutPlusOne(Char c, int width)
 {
@@ -534,6 +535,7 @@ PutPlusOne(Char c, int width)
 		NT_MoveToLineOrChar(CursorH,0);
 	}
 }
+#endif
 void StartHighlight(void)
 {
 }

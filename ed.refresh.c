@@ -1216,7 +1216,6 @@ RefCursor(void)
     flush();
 }
 
-#ifdef WINNT_NATIVE_UTF8_SUPPORT
 static void
 PutPlusOne(Char c, int width)
 {
@@ -1248,7 +1247,6 @@ PutPlusOne(Char c, int width)
 	}
     }
 }
-#endif
 
 void
 RefPlusOne(int l)
