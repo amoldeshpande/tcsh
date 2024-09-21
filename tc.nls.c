@@ -74,8 +74,30 @@ NLSWidth(Char c)
 }
 int NLSWidthMB(Char* cp, int*consumed)
 {
-    *consumed = 1;
-    return NLSWidth(*cp & CHAR);
+    int result = 0;
+	wchar_t out;
+	char four[4];
+	int len = 4;
+
+	*consumed = 0;
+
+	for(int i = 0; i < 4 ;i++) {
+		four[i] = *cp & CHAR;
+		if(!*cp) {
+			len = i ;
+			break;
+		}
+		cp++;
+	}
+	for(int i = 0; i < len; i++) {
+		result = wcswidth(four,i+1);
+		if(result > 0) {
+			*consumed = i+1;
+			break;
+		}
+	}
+	//dprintf("NSLWidthMB returning %d consumed\n",*consumed);
+	return result;
 }
 
 int

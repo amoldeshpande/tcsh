@@ -168,6 +168,9 @@ extern int didsetty;
 #ifdef WINNT_NATIVE_UTF8_SUPPORT
 #define MAKE_UTF8_MULTIBYTE(ptr,len) nt_make_utf8_multibyte(ptr,len)
 #else
+#ifdef WIDE_STRINGS
+#define MAKE_UTF8_MULTIBYTE(ptr,len) unix_make_utf8_multibyte(ptr,len)
+#endif
 #define MAKE_UTF8_MULTIBYTE(ptr,len) *(ptr)
 #endif
 

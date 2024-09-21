@@ -748,6 +748,11 @@ extern struct sigaction parterm;	/* Parents terminate catch */
 # else
 #  define	CHAR		0x00FFFFFF /* Mask to mask out the character */
 # endif
+
+#define NT_UTF8_MB 0x08000000
+#undef UNDER
+#define UNDER 0
+
 #elif defined (SHORT_STRINGS)
 # define	QUOTE 	((Char)	0100000)/* 16nth char bit used for 'ing */
 # define	TRIM		0073777	/* Mask to strip quote/lit bit */

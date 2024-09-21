@@ -298,6 +298,51 @@ Vdraw(Char c, int width)	/* draw char c onto V lines */
     }
 }
 
+Char unix_make_utf8_multibyte(Char* cp, int len) {
+
+	uint32_t mbchar = 0;
+
+	if(len == 1){
+		return *cp;
+	}
+	for(Char i = 0; i < len;i++) {
+		mbchar <<= 8;
+		mbchar |= *cp;
+		cp++;
+	}
+	Char i = get_or_cache_utf8_mb(mbchar);
+	return i | NT_UTF8_MB;
+}
+void putraw_utf8(Char c) {
+#if defined(WIDE_STRINGS)
+	if (c & NT_UTF8_MB) {
+		Char index = c & ~NT_UTF8_MB;
+		if (index >= 0 && index < NT_UTF8_MB) {
+			uint32_t mbchar = get_cached_utf8_mb(index);
+			int start = 0;
+			//
+			// there have to be at least 2 bytes in the utf8 sequence
+			// (otherwise we would not have marked it with NT_UTF8_MB.)
+			// 
+			if ((mbchar & 0xFF000000) == 0) {
+				start++;
+			}
+			if((mbchar & 0xFFFF0000) == 0) {
+				start = 2;
+			}
+			for(int i =start; i < 4;i++) {
+				unsigned char by = (mbchar >> (3-i)*8) & 0xFF;
+				putraw(by);
+			}
+		}
+	}
+	else {
+		putraw(c);
+	}
+#else
+	putraw(c);
+#endif
+}
 /*
  *  RefreshPromptpart()
  *	draws a prompt element, expanding literals (we know it's ASCIZ)
