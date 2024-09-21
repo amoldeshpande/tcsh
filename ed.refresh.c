@@ -31,9 +31,9 @@
  */
 #include "sh.h"
 #include "ed.h"
-/* #define DEBUG_UPDATE */
-/* #define DEBUG_REFRESH */
-/* #define DEBUG_LITERAL */
+#define DEBUG_UPDATE 
+#define DEBUG_REFRESH 
+#define DEBUG_LITERAL 
 
 /* refresh.c -- refresh the current set of lines on the screen */
 
@@ -57,7 +57,7 @@ extern
 	void    PutPlusOne      (Char, int);
 static	void	cpy_pad_spaces		(Char *, Char *, int);
 #if defined(DEBUG_UPDATE) || defined(DEBUG_REFRESH) || defined(DEBUG_LITERAL)
-static	void	reprintf			(char *, ...);
+void	reprintf			(char *, ...);
 #ifdef DEBUG_UPDATE
 static	void	dprintstr		(char *, const Char *, const Char *);
 
@@ -80,7 +80,7 @@ dprintstr(char *str, const Char *f, const Char *t)
  *      print debugging stuff on another. Don't interrupt the shell while
  *	debugging cause you'll mangle up the file descriptors!
  */
-static void
+void
 reprintf(char *fmt, ...)
 {
     static int fd = -1;
@@ -103,6 +103,24 @@ reprintf(char *fmt, ...)
     }
 }
 #endif  /* DEBUG_UPDATE || DEBUG_REFRESH || DEBUG_LITERAL */
+
+extern Char get_or_cache_utf8_mb(uint32_t inChar);
+extern uint32_t get_cached_utf8_mb(Char);
+Char unix_make_utf8_multibyte(Char* cp, int len) {
+
+	uint32_t mbchar = 0;
+
+	if(len == 1){
+		return *cp;
+	}
+	for(Char i = 0; i < len;i++) {
+		mbchar <<= 8;
+		mbchar |= *cp;
+		cp++;
+	}
+	Char i = get_or_cache_utf8_mb(mbchar);
+	return i | NT_UTF8_MB;
+}
 
 static int litlen = 0, litalloc = 0;
 
@@ -298,21 +316,6 @@ Vdraw(Char c, int width)	/* draw char c onto V lines */
     }
 }
 
-Char unix_make_utf8_multibyte(Char* cp, int len) {
-
-	uint32_t mbchar = 0;
-
-	if(len == 1){
-		return *cp;
-	}
-	for(Char i = 0; i < len;i++) {
-		mbchar <<= 8;
-		mbchar |= *cp;
-		cp++;
-	}
-	Char i = get_or_cache_utf8_mb(mbchar);
-	return i | NT_UTF8_MB;
-}
 void putraw_utf8(Char c) {
 #if defined(WIDE_STRINGS)
 	if (c & NT_UTF8_MB) {
@@ -364,8 +367,12 @@ RefreshPromptpart(Char *buf)
 		int consumed = 0;
 		Char cpSave = *cp;
 		w = NLSWidthMB(cp,&consumed);
+		reprintf("cp 0x%X, consumed %d\n",*cp,consumed);
 		if (consumed > 1) {
 		    *cp = MAKE_UTF8_MULTIBYTE(cp,consumed);
+		}
+		else {
+			consumed = 1;
 		}
 		Vdraw(MakeLiteral(litstart, cp + 1 - litstart, 0), w);
 		*cp = cpSave;

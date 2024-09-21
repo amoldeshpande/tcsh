@@ -31,6 +31,7 @@
  */
 #include "sh.h"
 
+void	reprintf			(char *, ...);
 #ifdef WIDE_STRINGS
 # ifdef HAVE_WCWIDTH
 #  ifdef UTF16_STRINGS
@@ -76,19 +77,21 @@ int NLSWidthMB(Char* cp, int*consumed)
 {
     int result = 0;
 	wchar_t out;
-	char four[4];
+	wchar_t four[4];
 	int len = 4;
 
 	*consumed = 0;
 
 	for(int i = 0; i < 4 ;i++) {
 		four[i] = *cp & CHAR;
+		reprintf("four[%d] is 0x%X\n",i,four[i]);
 		if(!*cp) {
 			len = i ;
 			break;
 		}
 		cp++;
 	}
+	reprintf("NLSWidthMB len is %d, c= 0x%X\n",len,*cp);
 	for(int i = 0; i < len; i++) {
 		result = wcswidth(four,i+1);
 		if(result > 0) {
@@ -96,7 +99,8 @@ int NLSWidthMB(Char* cp, int*consumed)
 			break;
 		}
 	}
-	//dprintf("NSLWidthMB returning %d consumed\n",*consumed);
+	reprintf("NLSWidthMB result is %d, c= 0x%X consumed %d\n",result,*cp,*consumed);
+	//dprintf("NSLWidthMB returning %d consumed\n",result,*consumed);
 	return result;
 }
 

@@ -38,7 +38,7 @@
 
 #define MAXMACROLEVELS	10	/* max number of nested kbd macros */
 
-#ifdef WINNT_NATIVE_UTF8_SUPPORT
+#ifndef WINNT_NATIVE
 # define NT_NUM_KEYS	256
 #endif /* WINNT_NATIVE */
 
@@ -167,10 +167,9 @@ extern int didsetty;
 
 #ifdef WINNT_NATIVE_UTF8_SUPPORT
 #define MAKE_UTF8_MULTIBYTE(ptr,len) nt_make_utf8_multibyte(ptr,len)
-#else
-#ifdef WIDE_STRINGS
+#elif defined(WIDE_STRINGS)
 #define MAKE_UTF8_MULTIBYTE(ptr,len) unix_make_utf8_multibyte(ptr,len)
-#endif
+#else
 #define MAKE_UTF8_MULTIBYTE(ptr,len) *(ptr)
 #endif
 
