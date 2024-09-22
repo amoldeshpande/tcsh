@@ -366,8 +366,9 @@ RefreshPromptpart(Char *buf)
 	    if (*cp) {
 		int consumed = 0;
 		Char cpSave = *cp;
+		reprintf("rpp:in cp 0x%X\n",*cp & CHAR);
 		w = NLSWidthMB(cp,&consumed);
-		reprintf("cp 0x%X, consumed %d\n",*cp,consumed);
+		reprintf("rpp:out cp 0x%X, consumed %d\n",*cp & CHAR,consumed);
 		if (consumed > 1) {
 		    *cp = MAKE_UTF8_MULTIBYTE(cp,consumed);
 		}
@@ -413,8 +414,24 @@ Refresh(void)
     Char    oldgetting;
 
 #ifdef DEBUG_REFRESH
-    reprintf("Prompt = :%s:\r\n", short2str(Prompt));
-    reprintf("InputBuf = :%s:\r\n", short2str(InputBuf));
+    //reprintf("Prompt = :%s:\r\n", short2str(Prompt));
+	int i =0;
+	char c  = 0;
+	reprintf("Prompt=");
+	do {
+		c = (char)(Prompt[i] & CHAR);
+		reprintf("(0x%X)",c);
+		i++;
+	}while (c);
+	reprintf("\n");
+	reprintf("InputBuf=");
+	i =0;
+	do {
+		c = (char)(InputBuf[i] & CHAR);
+		reprintf("(0x%X)",c);
+		i++;
+	}while (c);
+    reprintf("\n");
 #endif /* DEBUG_REFRESH */
     oldgetting = GettingInput;
     GettingInput = 0;		/* avoid re-entrance via SIGWINCH */

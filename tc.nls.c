@@ -77,13 +77,19 @@ int NLSWidthMB(Char* cp, int*consumed)
 {
     int result = 0;
 	wchar_t out;
-	wchar_t four[4];
+	unsigned char four[5];
 	int len = 4;
+	mbstate_t rs;
 
 	*consumed = 0;
+	if((*cp & CHAR ) > 0xFF)
+	{
+		*consumed = 1;
+		return 1;
+	}
 
 	for(int i = 0; i < 4 ;i++) {
-		four[i] = *cp & CHAR;
+		four[i] = (*cp & CHAR);
 		reprintf("four[%d] is 0x%X\n",i,four[i]);
 		if(!*cp) {
 			len = i ;
@@ -91,9 +97,20 @@ int NLSWidthMB(Char* cp, int*consumed)
 		}
 		cp++;
 	}
+	four[4] = '\0';
 	reprintf("NLSWidthMB len is %d, c= 0x%X\n",len,*cp);
 	for(int i = 0; i < len; i++) {
-		result = wcswidth(four,i+1);
+	 	unsigned char save = four[i+1];
+		const char* src = four;
+		four[i+1] = '\0';
+		reprintf("Checking str %s 0x%X\n",src,*src);
+		memset(&rs,0,sizeof(rs));
+		result = mbsrtowcs(NULL,&src,0,&rs);
+		if(result < 0)
+		{
+			reprintf("mbsrtowc failed %s\n",strerror(errno));
+		}
+		four[i+1] = save;
 		if(result > 0) {
 			*consumed = i+1;
 			break;
