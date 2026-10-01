@@ -27,23 +27,12 @@ steps:
 #     targetPath: '$(System.DefaultWorkingDirectory)/tcsh-x64.exe'
 #      artifact: 'binary'
 #      publishLocation: 'pipeline'
-  - task: GitHubRelease@0
+  - task: GitHubRelease@1
     inputs:
-      gitHubConnection: github.com_amoldeshpande
+      gitHubConnection: github.com_amoldeshpande_somehow_different
       repositoryName: $(Build.Repository.Name) 
-      #action: 'create' # Options: create, edit, delete
-      #target:  # Required when action == Create || Action == Edit
-      tagSource: 'manual' # Required when action == Create# Options: auto, manual
-      #tagPattern: # Optional
+      tagSource: 'userSpecifiedTag' 
       tag: $(Build.BuildNumber) # Required when action == Edit || Action == Delete || TagSource == Manual
-      title: $(BuildTitle) Release from $(Build.SourceBranchName) # Optional
-      #releaseNotesSource: 'file' # Optional. Options: file, input
-      #releaseNotesFile: # Optional
-      #releaseNotes: # Optional
+      title: $(BuildTitle) Release from $(Build.SourceBranchName) # Optional    
       assets: '$(System.DefaultWorkingDirectory)/tcsh-x64.exe' # Optional
-      #assetUploadMode: 'delete' # Optional. Options: delete, replace
-      #isDraft: true # Optional
-      #isPreRelease: false # Optional
-      #addChangeLog: true # Optional
-      #compareWith: 'lastFullRelease' # Required when addChangeLog == True. Options: lastFullRelease, lastRelease, lastReleaseByTag
-      #releaseTag: # Required when compareWith == LastReleaseByTag
+      
