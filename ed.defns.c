@@ -291,7 +291,7 @@ struct KeyFuncs FuncNames[F_NUM_FUNCNAMES] INIT_ZERO_STRUCT;
 extern KEYCMD CcEmacsMap[];
 extern KEYCMD CcViMap[];
 extern KEYCMD  CcViCmdMap[];
-#else /* !WINNT_NATIVE*/
+#else /* !WINNT_NATIVE_NO_UTF8*/
 KEYCMD  CcEmacsMap[] = {
 /* keymap table, each index into above tbl; should be 256*sizeof(KEYCMD)
    bytes long */

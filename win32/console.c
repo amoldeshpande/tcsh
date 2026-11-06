@@ -122,6 +122,7 @@ void nt_set_win10_vt_mode() {
             dprintf("getconsole mode failed %d\n",GetLastError());
 			return;
         }
+		dwmode = (dwmode & ~DISABLE_NEWLINE_AUTO_RETURN);
         if (!SetConsoleMode(ghstdout, dwmode | ENABLE_VIRTUAL_TERMINAL_PROCESSING)) {
             return;
         }
